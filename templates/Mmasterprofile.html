@@ -1,0 +1,99 @@
+{% extends 'Mbase.html' %}
+{% load static %}
+{% block body %}
+<div class="service_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="section_title3 padding_plus text-center mb-90">
+                    {% for d in data %}
+                    <h3>{{d.name}} profile</h3>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+        <div class="white_bg_pos">
+            {% for d in data %}
+            <div class="card">
+                <div class="mr-auto">
+                    <h4 class="modal-title" id="myModalLabel">
+                        <a href="/manager/verification_status?id={{d.service_provider_id}}">
+                            {% if d.verification_status != 'active' %}
+                            <button class="btn btn-success" type="submit">Activate</button>
+                            {% else %}
+                            <button class="btn btn-danger" type="submit">Disable</button>
+                            <p class="h6 mb-3 font-weight-normal mt-2 text-success"> {{msg}} </p>
+                            {% endif %}
+                        </a>
+
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="card-title mb-6">
+                        <div class="d-flex justify-content-start">
+                            <div class="image-container">
+                                <img src="../media/{{d.image}}" id="imgProfile" style="width: 150px; height: 150px"
+                                    class="img-thumbnail" />
+                            </div>
+                            <div class="userData ml-3">
+                                <h2 class="d-block" style="font-size: 1.5rem; font-weight: bold">
+                                    {{d.name}}</h2>
+                                <h6 class="d-block">Email :
+                                    <span>{{d.email}}</span>
+                                </h6>
+                                <h6 class="d-block">mobile :
+                                    <span>{{d.mobile}}</span>
+                                </h6>
+                                <h6 class="d-block">Shop:
+                                    <span>{{d.shopname}}</span></h6>
+                                <h6 class="d-block">District:
+                                    <span>{{d.district}}</span></h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-sm-3 col-md-3 col-5">
+                                    <label style="font-weight:bold;">Full
+                                        Name</label>
+                                </div>
+                                <div class="col-md-9 col-6">
+                                    {{d.name}}
+                                </div>
+                            </div>
+                            <hr />
+
+                            <div class="row">
+                                <div class="col-sm-3 col-md-3 col-5">
+                                    <label style="font-weight:bold;">Address</label>
+                                </div>
+                                <div class="col-md-9 col-6">
+                                    {{d.address}}
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-3 col-md-3 col-5">
+                                    <label style="font-weight:bold;">Status</label>
+                                </div>
+                                <div class="col-md-9 col-6">
+                                    {{d.verification_status}}
+                                </div>
+                            </div>
+
+                            <hr />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

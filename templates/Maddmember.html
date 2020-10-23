@@ -1,0 +1,90 @@
+{% extends 'Mbase.html' %}
+{% load static %}
+{% block body %}
+<div class="service_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="section_title3 padding_plus text-center mb-90">
+                    <h3>Add Master</h3>
+                </div>
+            </div>
+        </div>
+        <div class="white_bg_pos">
+            <div class="col-xl-12 ">
+                <div class="popup_inner">
+                    <h3> Master Resigistration </h3>
+                    <form class="contact-form" action="addmember" method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            {% csrf_token%}
+                            <div class="col-xl-12">
+                                <p class="h6 mb-3 font-weight-normal mt-2 text-danger"> {{msg}} </p>
+                                <input type="text" class="form-input text-dark" name="user_name" id="name"
+                                    placeholder="Your Name" autofocus required value="{{user_name}}">
+                                <input type="text" class="form-input text-dark" name="shopname" id="name"
+                                    placeholder="Your Shop Name" autofocus required value="{{shopname}}">
+                                    <label>Add user image</label>
+                                <input type="file" name="myfile" accept="image/x-png,image/gif,image/jpeg" class="form-control file-upload-info"
+                                    id="customFileLang" placeholder="Upload image which will appear on user menu" required>
+                                <input type="email" class="form-input" name="email" id="email" placeholder="Your Email"
+                                    value="{{email}}" autofocus required>
+                                <input type="mobile" class="form-input" name="mobile" id="mobile"
+                                    placeholder="Mobile no ..... don't write country code" value="{{mobile}}" autofocus
+                                    required>
+                                <input type="address" class="form-input" name="address" id="address"
+                                    placeholder="Address" value="{{address}}" autofocus required>
+
+
+                            </div>
+                            <div class="col-xl-6 col-md-6">
+                                <select class="form-select wide" id="default-select" class="" name="salontype"
+                                    value="{{salontype}}" autofocus required>
+                                    {% if salontype != None %}
+                                    <option value="{{salontype}}">{{salontype}}</p>
+                                    </option>
+                                    {% else %}
+                                    <option value="">Salon Type<p class="h6 mb-3 font-weight-normal mt-2 text-danger">*</p>
+                                    </option>
+                                    {% endif %}
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Unisex">Unisex</option>
+
+                                </select>
+                            </div>
+                            <div class="col-xl-6 col-md-6">
+                                <select class="form-select wide" class="form-input" id="default-select" class=""
+                                    name="district" value="{{district}}" autofocus required>
+                                    {% if district != None %}
+                                    <option value="{{district}}">{{district}}</p>
+                                    </option>
+                                    {% else %}
+                                    <option value="">District<p class="h6 mb-3 font-weight-normal mt-2 text-danger">*
+                                        </p>
+                                    </option>
+                                    {% endif %}
+                                    {% for d in district_list %}
+                                    <option value="{{d.district}}">{{d.district}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <hr>
+                            <div class="col-xl-12">
+                                <input type="password" class="form-input" name="password" id="password" pattern=".{8,16}" placeholder="Password" required title="8 to 16 characters" autofocus>
+
+                                <input type="password" class="form-input" name="re_password" id="re_password"
+                                    placeholder="Repeat your password" aria-valuemin="8" required>
+                                <hr>
+                            </div>
+                        </div>
+                        <div>
+                            <button type="submit" value="Add" class="boxed-btn3">ADD</button>
+                        </div>
+                    </form>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

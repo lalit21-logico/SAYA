@@ -1,0 +1,135 @@
+{% extends 'Ebase.html' %}
+{% load static %}
+{% block body %}
+<div class="service_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+
+            </div>
+        </div>
+        <div class="white_bg_pos">
+            {% for d in data %}
+            <div class="card">
+                <div class="mr-auto">
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-sm-3 col-md-3 col-5">
+                                    <label style="font-weight:bold;">
+                                        Order Status</label>
+                                </div>
+                                <div class="col-md-9 col-6">
+                                    {% if d.order_status == 'initiated' %}
+                                    <p class="h6 mb-3 font-weight-normal mt-2 text-warning">
+                                        Order Initiated
+                                        <br>
+                                        connect to customer fast
+                                        <br>
+                                    </p>
+                                    {% endif %}
+                                    {% if d.order_status == 'completed' %}
+                                    <p class="h6 mb-3 font-weight-normal mt-2 text-success">
+                                        Completed
+                                        
+                                        <br>
+                                    </p>
+                                    {% endif %}
+
+
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-3 col-md-3 col-5">
+                                    <label style="font-weight:bold;">Contact</label>
+                                </div>
+                                <div class="col-md-9 col-6">
+                                    {% for  x in user_data %}
+                                    <p class="h6 mb-3 font-weight-normal mt-2 text-primary">
+                                        {% if d.order_status == 'initiated' %}
+                                        Name :{{x.user_name}}
+                                        <br>
+                                        Mobile Number: {{x.mobile}}
+                                        <br>
+                                        Email :{{x.email}}
+                                        {% elif d.order_status == 'completed' %}
+                                        Order Completd <br>
+                                        contact not Available
+                                        {% endif %}
+                                    </p>
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-3 col-md-3 col-5">
+                                    <label style="font-weight:bold;">Payment</label>
+                                </div>
+                                <div class="col-md-9 col-6">
+                                    {% if d.order_status == 'initiated' %}
+                                    {% if d.payment_status == 'success' %}
+                                    <p class="h6 mb-3 font-weight-normal mt-2 text-success">
+                                    </p>
+                                    <br>
+                                    <p class="h6 mb-3 font-weight-normal mt-2 text-danger">
+                                        Due: = {{d.amount_service}} (collect from customer)
+                                    </p>
+                                    {% endif %}
+                                    {% elif d.order_status == 'completed' %}
+                                    <p class="h6 mb-3 font-weight-normal mt-2 text-success">
+                                        Paid: {{d.amount_service}}<br>
+                                        by customer to you
+                                    </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3 col-md-3 col-5">
+                                    <label style="font-weight:bold;">Order details</label>
+                                </div>
+                                <div class="col-md-9 col-6">
+                                    
+                                    <p class="h6 mb-3 font-weight-normal mt-2 text-dark">
+                                       {{d.order_data}} 
+                                    </p>
+                                    <br>
+                                    
+                                </div>
+                                
+                            </div>
+                            <hr>
+                            {% if d.order_status == 'initiated' %}
+                            <div class="row">
+                                <div class="col-sm-3 col-md-3 col-5">
+                                    <label style="font-weight:bold;"> Complete and click </label>
+                                </div>
+                                <div class="col-md-9 col-6">
+                                    <form action="completed" method="post">
+                                        {% csrf_token%}
+                                    <input type=hidden value={{d.txnid}} name='txnid'>
+                                    <button type="submit" 
+                                        class="btn btn-outline-danger">
+                                        only press<br> if order Completed
+                                    </button>
+                                </form>
+                                </div>
+                                
+                            </div>
+                            <hr>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

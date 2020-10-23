@@ -1,0 +1,205 @@
+{% extends 'Ubase.html' %}
+{% load static %}
+{% block body %}
+<div class="service_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+
+            </div>
+        </div>
+
+        <div class="white_bg_pos">
+            <div class="row">
+
+                <div class="col-xl-12">
+                    <form class="form-inline my-2 my-lg-0">
+                        <a href="/salon">
+                            <button type="button" class="btn btn-outline-success">
+                                Home
+                            </button>
+                        </a>
+                    </form>
+                    <hr>
+                    <button type="button" id="5" onClick="btnSubmit(this.id)" class="btn btn-outline-warning">
+                        5
+                        <i class="fa fa-star-o"></i>
+                    </button>
+                    <button type="button" id="4" onClick="btnSubmit(this.id)" class="btn btn-outline-warning">
+                        4
+                        <i class="fa fa-star-o"></i>
+                    </button>
+                    <button type="button" id="3" onClick="btnSubmit(this.id)" class="btn btn-outline-warning">
+                        3
+                        <i class="fa fa-star-o"></i>
+                    </button>
+                    <button type="button" id="2" onClick="btnSubmit(this.id)" class="btn btn-outline-warning">
+                        2
+                        <i class="fa fa-star-o"></i>
+                    </button>
+                    {% if request.session.salon_type != 'Male' %}
+                    <a href="type_salon?id=Male">
+                        <button type="button"  class="btn btn-outline-danger">
+                            <i class="fa fa-male"></i>
+
+                        </button>
+                    </a>
+                    {% else %}
+                    <button type="button"  class="btn btn-danger">
+                        <i class="fa fa-male"></i>
+
+                    </button>
+                    {% endif %}
+                    {% if request.session.salon_type != 'Female' %}
+                    <a href="type_salon?id=Female">
+                        <button type="button" class="btn btn-outline-primary">
+                            <i class="fa fa-female"></i>
+
+                        </button>
+                    </a>
+                    {% else %}
+                    <button type="button"  class="btn btn-primary">
+                        <i class="fa fa-male"></i>
+
+                    </button>
+                    {% endif %}
+
+
+                    <div id="display1">
+                        {% for d in data %}
+                        <a href="getservice?id={{d.service_provider_id}}">
+                            <div
+                                class="single_service d-flex justify-content-between align-items-center btn btn-outline-dark">
+                                <div class="service_inner d-flex align-items-center">
+                                    <div class="thumb">
+                                        <img src="media/{{d.image}}" alt="No Profile" class="img-thumbnail">
+                                    </div>
+                                    <span>{{d.name}}</span>
+                                    <p>--{{d.shopname}}
+                                    </p>
+
+                                </div>
+                                <div class="p-rating">
+
+                                    {% if d.rating == 0 %}
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    {% endif %}
+                                    {% if d.rating == 1 %}
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    {% endif %}
+                                    {% if d.rating == 2 %}
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    {% endif %}
+                                    {% if d.rating == 3 %}
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    {% endif %}
+                                    {% if d.rating == 4 %}
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    {% endif %}
+                                    {% if d.rating == 5 %}
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+                        </a>
+                        {% empty %}
+
+                        <p class="h3 mb-3 font-weight-normal mt-2 text-dark">
+                            keep waiting we start srevices in your area soon.
+                            <br></p>
+                        <p class="h4 mb-3 font-weight-normal mt-2 text-success">
+                            Connected with us......
+                        </p>
+                        {% endfor %}
+
+                    </div>
+                </div>
+
+                <div class="col-xl-12">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- service_area_end -->
+
+{% endblock%}
+
+
+
+{% block script %}
+
+<script>
+    // $(document).ready(function () {
+    function btnSubmit(clicked_id) {
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'rating' %}",
+            data: {
+                id: clicked_id
+            },
+            success: function (response) {
+                $('#display1').empty();
+                for (var key in response.data) {
+                    var temp = '';
+                    temp += '<a href="getservice?id=' + response.data[key].service_provider_id + '">';
+                    temp += '<div class="single_service d-flex justify-content-between align-items-center btn btn-outline-warning">'
+                    temp += '<div class="service_inner d-flex align-items-center">'
+                    temp += '<div class="thumb">'
+                    temp += '<img src="media/' + response.data[key].image + '" alt="No Profile" class="img-thumbnail">'
+                    temp += ' </div>'
+                    temp += '<span>' + response.data[key].name + '</span>'
+                    temp += '<p>--' + response.data[key].shopname + '</p>'
+                    temp += '</div>'
+                    temp += '<div class="p-rating">'
+
+                    var i;
+                    for (i = 0; i <= 4; i++) {
+                        if (response.data[key].rating <= 0)
+                            temp += '<i class="fa fa-star-o"></i>';
+                        else
+                            temp += '<i class="fa fa-star"></i>';
+                        response.data[key].rating -= 1;
+                    }
+
+                    temp += '</div>'
+                    temp += '</div>'
+                    $('#display1').append(temp);
+                }
+            },
+            error: function (response) {
+                alert("no data")
+            }
+        });
+    };
+    // });
+</script>
+
+{% endblock %}

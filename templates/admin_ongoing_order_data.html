@@ -1,0 +1,101 @@
+{% extends 'abase.html' %}
+{% load static %}
+{% block body %}
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="#">
+                    <em class="fa fa-home"></em>
+                </a></li>
+            <li class="active">On-going</li>
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <table class="table table-striped table-dark">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Master Name and id</th>
+                    <th scope="col">Manager Name and id</th>
+                    <th scope="col">Manager contact</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Order-at</th>
+                    <th scope="col">Status</th>
+
+
+                  </tr>
+                </thead>
+                <tbody id="display1">
+                    {% for d in data %}
+                  <tr>
+                    <th scope="row">{{ forloop.counter}}</th>
+                    <td> {{d.service_provider_id.name}} - {{d.service_provider_id.service_provider_id}}</td>
+                    <td>{{d.service_provider_id.manager_id.name}} - {{d.service_provider_id.manager_id.manager_id}}</td>
+                    <td>{{d.service_provider_id.manager_id.mobile}}</td>
+                    <td>{{d.amount_sah}}+{{d.amount_service}}</td>
+                    <td>{{d.created_at}}</td>
+                    <td>{{d.order_status}}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</div>
+
+{% endblock %}
+
+{% block script %}
+
+
+<script>
+
+
+	$(document).ready(function () {
+		setInterval(function () {
+			$.ajax({
+				type: 'POST',
+				url: "{% url 'ongoingOrders' %}",
+                data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+				success: function (response) {
+					
+                $('#display1').empty();
+                var temp = '';
+                var i = 1
+                for (var key in response.data) {
+                    temp += ' <tr>';
+                    temp += ' <th scope="row">'+ i +'</th>';
+                    temp += ' <td> '+response.data[key].service_provider_id__name +' - '+response.data[key].service_provider_id__service_provider_id+'</td>';
+                    temp += ' <td>'+response.data[key].service_provider_id__manager_id__name+' - '+response.data[key].service_provider_id__manager_id__manager_id+'</td>';
+                    temp += ' <td>'+response.data[key].service_provider_id__manager_id__mobile+'</td>';
+                    temp += ' <td>'+response.data[key].amount_sah+' + '+response.data[key].amount_service+'</td>';
+                    temp += ' <td>'+response.data[key].created_at+'</td>';
+                    temp += ' <td>'+response.data[key].order_status+'</td>'
+                    temp += ' </tr>'; 
+                    i += 1                 
+                    
+                }
+                $('#display1').append(temp);
+
+				},
+				error: function (response) {
+
+				}
+			});
+		}, 3000);
+	});
+</script>
+
+
+{% endblock %}

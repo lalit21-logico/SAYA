@@ -1,0 +1,39 @@
+{% extends 'Ebase.html' %}
+{% load static %}
+{% block body %}
+<div class="bradcam_area breadcam_bg overlay2">
+    <div class="popup_box ">
+        <div class="popup_inner">
+            <h3> Master Login</h3>
+            <form action="login" method="post">
+                <div class="row">
+                    {% csrf_token%}
+                    <p class="h6 mb-3 font-weight-normal mt-2 text-danger"> {{msg}} </p>
+                    <div class="col-xl-12">
+                        <input type="email" class="form-input" name="email" id="email" value="{{email}}"
+                            placeholder="Email" autofocus required>
+                        <input type="password" class="form-input" name="password" id="password" placeholder="Password"
+                            autofocus required>
+                        <hr>
+                    </div>
+                </div>
+                <div class="col-xl-12">
+                    <button type="submit" class="boxed-btn3">Login</button>
+                </div>
+            </form>
+            <div class="col-xl-12">
+                <a href="/forgotPassword">
+                    <p>forget password?</p>
+                </a>
+            </div>
+            <div class="col-xl-12">
+                <hr>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</div>
+{% endblock %}

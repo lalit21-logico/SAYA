@@ -1,0 +1,79 @@
+{% extends 'abase.html' %}
+{% load static %}
+{% block body %}
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="#">
+                    <em class="fa fa-home"></em>
+                </a></li>
+            <li class="active">Add District</li>
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+
+            <div class="login-panel panel panel-default">
+                <div class="panel-heading">ADD District</div>
+                <div class="panel-body">
+                    <p class="text-danger">{{msg}}</p>
+                    <p class="text-success">{{msg1}}</p>
+
+                    <form action="addDistrict" method="post">
+                        {% csrf_token %}
+                        <fieldset>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="district" id="district"
+                                    placeholder="Name of district" autofocus required value="{{user_name}}">
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" id="default-select" class="" name="state" autofocus
+                                    required>
+                                    <option value="">state<p class="h6 mb-3 font-weight-normal mt-2 text-danger">*
+                                        </p>
+                                    </option>
+                                    {% for d in data %}
+                                    <option value="{{d.state}}">{{d.state}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-xl-12">
+                                <button type="submit" class="btn btn-primary">Add </button>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div><!-- /.col-->
+
+        <div class="col-md-6">
+
+            <table class="table table-striped table-dark">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">District</th>
+                    <th scope="col">State</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for d in district_data %}
+                  <tr>
+                    <th scope="row">{{ forloop.counter}}</th>
+                    <td>{{d.district}}</td>
+                    <td>{{d.state_id.state}}</td>      
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</div>
+
+{% endblock %}

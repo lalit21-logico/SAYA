@@ -1,0 +1,187 @@
+{% extends 'Ubase.html' %}
+{% load static %}
+{% block body %}
+<div class="service_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+
+            </div>
+        </div>
+
+        <div class="white_bg_pos">
+            <div class="row">
+
+                <div class="col-xl-6">
+                    <form class="form-inline my-2 my-lg-0">
+                        <a href="/salon">
+                            <button type="button" class="btn btn-outline-success">
+                                Home
+                            </button>
+                        </a>
+                    </form>
+                    <div id="display1">
+                        {% for d in data %}
+                        <div class="single_service d-flex justify-content-between align-items-center ">
+                            <div class="service_inner d-flex align-items-center">
+                                <div class="thumb">
+                                    <img src="media/{{d.image}}" alt="*" class="img-thumbnail"
+                                        style="margin-bottom:5px;">
+                                </div>
+                                <span>{{d.name_of_service}}</span>
+                                <p>-@Rs--{{d.price}}
+                                </p>
+                            </div>
+
+                            <button type="button" id="{{d.service_id}}a{{d.service_provider_id.service_provider_id}}"
+                                onClick="btnSubmit(this.id)" class="btn btn-outline-success">
+                                Add
+                            </button>
+
+                        </div>
+
+                        {% endfor %}
+                    </div>
+                </div>
+                <div id="cartlist" class="col-xl-6">
+                    {% if cartitem == 'empty' %}
+                    <a href="#null">
+                        {% else %}
+                        <a href="/placeorder">
+                            {% endif %}
+                            <button type="button" href="" class="btn btn-outline-warning">
+                                Place order
+                            </button>
+                            {{msg}}
+                        </a>
+
+                        {% for d in data1 %}
+                        <div class="single_service d-flex justify-content-between align-items-center ">
+                            <div class="service_inner d-flex align-items-center">
+                                <div class="thumb">
+                                    <img src="media/{{d.service_id.image}}" alt="*"
+                                        class="img-thumbnail" style="margin-bottom:5px;">
+                                </div>
+                                <span>{{d.service_id.name_of_service}}</span>
+                                <p>-@Rs--{{d.service_id.price}}
+                                </p>
+                            </div>
+                            <button type="button" id="{{d.temp_id}}" onClick="btnRemove(this.id)"
+                                class="btn btn-outline-danger">
+                                Remove
+                            </button>
+                        </div>
+                        {% endfor %}
+                </div>
+
+
+                <div class="col-xl-12">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock%}
+
+{% block modal %}
+<!-- service_area_end -->
+
+{% endblock %}
+
+
+
+{% block script %}
+
+<script>
+    // $(document).ready(function () {
+
+
+    function btnSubmit(clicked_id) {
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'cartlistr' %}",
+            data: {
+                "id": clicked_id,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function (response) {
+                $('#cartlist').empty();
+                var tempo = '';
+                tempo += '<a href="/placeorder">';
+                tempo += '<button type="button" class="btn btn-outline-warning">';
+                tempo += 'Place order';
+                tempo += ' </button>';
+                tempo += '</a>';
+                $('#cartlist').append(tempo);
+                for (var key in response.data) {
+                    var temp = '';
+                    temp += '<div class="single_service d-flex justify-content-between align-items-center">'
+                    temp += '<div class="service_inner d-flex align-items-center">'
+                    temp += '<div class="thumb">'
+                    temp += '<img src="media/' + response.data[key].service_id__image + '" alt="*" class="img-thumbnail">'
+                    temp += ' </div>'
+                    temp += '<span>' + response.data[key].service_id__name_of_service + '</span>'
+                    temp += '<p>-@Rs--' + response.data[key].service_id__price + '</p>'
+                    temp += '</div>'
+                    temp += '<button type="button" id="' + response.data[key].temp_id + '" onClick="btnRemove(this.id)" class="btn btn-outline-danger">'
+                    temp += 'Remove'
+                    temp += '</button>'
+                    temp += '</div>'
+                    $('#cartlist').append(temp);
+                }
+            },
+            error: function (response) {
+                alert("no data")
+            }
+        });
+    };
+    // });
+</script>
+<script>
+    function btnRemove(clicked_id) {
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'cartlistrRemove' %}",
+            data: {
+                "id": clicked_id,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function (response) {
+                $('#cartlist').empty();
+                var tempo = '';
+                if(response.cartitem == 'empty'){
+                    tempo += '<a href="#null">';
+                }else{
+                    tempo += '<a href="/placeorder">';
+                }
+                tempo += '<button type="button" class="btn btn-outline-warning">';
+                tempo += 'Place order ';
+                tempo += ' </button>';
+                tempo += '</a>';
+                $('#cartlist').append(tempo);
+                for (var key in response.data) {
+                    var temp = '';
+                    temp += '<div class="single_service d-flex justify-content-between align-items-center">'
+                    temp += '<div class="service_inner d-flex align-items-center">'
+                    temp += '<div class="thumb">'
+                    temp += '<img src="media/' + response.data[key].service_id__image + '" alt="*" class="img-thumbnail">'
+                    temp += ' </div>'
+                    temp += '<span>' + response.data[key].service_id__name_of_service + '</span>'
+                    temp += '<p>-@Rs--' + response.data[key].service_id__price + '</p>'
+                    temp += '</div>'
+                    temp += '<button type="button" id="' + response.data[key].temp_id + '" onClick="btnRemove(this.id)" class="btn btn-outline-danger">'
+                    temp += 'Remove'
+                    temp += '</button>'
+                    temp += '</div>'
+                    $('#cartlist').append(temp);
+                }
+            },
+            error: function (response) {
+                alert("no data")
+            }
+        });
+    };
+// });
+</script>
+
+{% endblock %}

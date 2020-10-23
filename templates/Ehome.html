@@ -1,0 +1,105 @@
+{% extends 'Ebase.html' %}
+{% load static %}
+{% block body %}
+
+<div class="slider_area">
+    <div class="single_slider d-flex align-items-center justify-content-center slider_bg_1 overlay2">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="slider_text text-center">
+                        <h3>work <br>
+                             & earn</h3>
+                        <p>No salon required</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- about_area_start -->
+
+<!-- about_area_end -->
+
+
+<!-- gallery_area_start -->
+<div class="gallery_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="section_title2 text-center mb-90">
+                    <i class="flaticon-scissors"></i>
+                    <h3>Our Gallery</h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="gallery_active owl-carousel">
+                    <div class="single_gallery">
+                        <div class="thumb">
+                            <img src="{% static 'manager/img/gallery/1.png' %}" alt="">
+                            <div class="image_hover">
+                                <a class="popup-image" href="{% static 'manager/img/gallery/1.png' %}">
+                                    <i class="ti-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="single_gallery">
+                        <div class="thumb">
+                            <img src="{% static 'manager/img/gallery/2.png' %}" alt="">
+                            <div class="image_hover">
+                                <a class="popup-image" href="{% static 'manager/img/gallery/2.png' %}">
+                                    <i class="ti-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="single_gallery">
+                        <div class="thumb">
+                            <img src="{% static 'manager/img/gallery/4.jpg' %}" alt="">
+                            <div class="image_hover">
+                                <a class="popup-image" href="{% static 'manager/img/gallery/2.png' %}">
+                                    <i class="ti-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="single_gallery">
+                        <div class="thumb">
+                            <img src="{% static 'manager/img/gallery/3.png' %}" alt="">
+                            <div class="image_hover">
+                                <a class="popup-image" href="{% static 'manager/img/gallery/3.png' %}">
+                                    <i class="ti-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="single_gallery">
+                        <div class="thumb">
+                            <img src="{% static 'manager/img/gallery/5.jpg' %}" alt="">
+                            <div class="image_hover">
+                                <a class="popup-image" href="{% static 'manager/img/gallery/2.png' %}">
+                                    <i class="ti-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- gallery_area_end -->
+
+
+
+
+<!-- cutter_muster_end -->
+
+
+<!-- find_us_area_end -->
+
+{% endblock %}

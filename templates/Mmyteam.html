@@ -1,0 +1,53 @@
+{% extends 'Mbase.html' %}
+{% load static %}
+{% block body %}
+<div class="service_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+
+            </div>
+        </div>
+        <div class="white_bg_pos">
+            <div class="col-xl-12">
+                <div class="book_btn text-center">
+                    <a class="boxed-btn3 " href="/manager/addmember">Add Member </a>
+                </div>
+                <p class="h6 mb-3 font-weight-normal mt-2 text-success">  {{msg}} </p>
+            </div>
+            {% for d in data %}
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="single_service d-flex justify-content-between align-items-center">
+                        <div class="service_inner d-flex align-items-center">
+                            <a href="/manager/masterprofile?id={{d.service_provider_id}}">
+                            <div class="thumb">
+                                <img src="../media/{{d.image}}" alt="">
+                            </div>
+                            </a>
+                            <a href="/manager/masterprofile?id={{d.service_provider_id}}">
+                            <span>{{d.name}}</span>
+                            </a>
+                        </div>
+                        {% if d.verification_status == 'active' %}
+                        <p class="h6 mb-3 font-weight-normal mt-2 text-success">  Active </p>
+                        {% else %}
+                        <p class="h6 mb-3 font-weight-normal mt-2 text-danger">  Temporary Disable </p>
+                        {% endif %}
+                        <p class="font-weight-normal mt-2 text-success">Earning by Member Rs {{d.manager_commision}}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+
+                        <p class="h3 mb-3 font-weight-normal mt-2 text-dark">
+                             You can  add members for your team.
+                            <br></p>
+                        <p class="h4 mb-3 font-weight-normal mt-2 text-success">
+                            Add salon professional & Connected with us......
+                        </p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

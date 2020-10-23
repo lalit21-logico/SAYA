@@ -1,0 +1,175 @@
+{% extends 'abase.html' %}
+{% load static %}
+{% block body %}
+
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+	<div class="row">
+		<ol class="breadcrumb">
+			<li><a href="#">
+					<em class="fa fa-home"></em>
+				</a></li>
+			<li class="active">Data & Info</li>
+			<li class="active">{{table}}</li>
+		</ol>
+	</div>
+	<div class="row">
+		<div class="col-md-2">
+
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					Data
+
+					<span class="pull-right clickable panel-toggle panel-button-tab-left"><em
+							class="fa fa-toggle-up"></em></span></div>
+				<div class="panel-body">
+					<ul class="todo-list" id="to_do_list">
+						<a href="adminPanel?id=managerlist">
+							<li class="todo-list-item">
+
+								<label >Manger List</label>
+							</li>
+						</a>
+						<a href="adminPanel?id=masterlist">
+							<li class="todo-list-item">
+								<label >Master List</label>
+
+							</li>
+						</a>
+						<a href="adminPanel?id=userlist">
+							<li class="todo-list-item">
+								<label >User List</label>
+
+							</li>
+						</a>
+						<a href="adminPanel?id=transaction">
+							<li class="todo-list-item">
+								<label >Transaction</label>
+
+							</li>
+						</a>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-10">
+			<table class="table table-striped table-dark">
+				{% if  table == 'managerlist' %}
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Name</th>
+						<th scope="col">Email</th>
+						<th scope="col">District</th>
+
+					</tr>
+				</thead>
+				<tbody>
+					{% for d in data %}
+					<tr>
+						<th scope="row">{{ forloop.counter}}</th>
+						<td>{{d.name}}</td>
+						<td>{{d.email}}</td>
+						<td>{{d.district}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+				{% endif %}
+
+
+				{% if  table == 'masterlist' %}
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Name</th>
+						<th scope="col">Email</th>
+						<th scope="col">District</th>
+
+					</tr>
+				</thead>
+				<tbody>
+					{% for d in data %}
+					<tr>
+						<th scope="row">{{ forloop.counter}}</th>
+						<td>{{d.name}}</td>
+						<td>{{d.email}}</td>
+						<td>{{d.district}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+				{% endif %}
+
+
+				{% if  table == 'userlist' %}
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Name</th>
+						<th scope="col">Email</th>
+						<th scope="col">District</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for d in data %}
+					<tr>
+						<th scope="row">{{ forloop.counter}}</th>
+						<td>{{d.user_name}}</td>
+						<td>{{d.email}}</td>
+						<td>{{d.district}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+				{% endif %}
+
+
+				{% if  table == 'transaction' %}
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">txnid</th>
+						<th scope="col">Payment Status</th>
+						<th scope="col">Order Status</th>
+						<th scope="col">Amount</th>
+						<th scope="col">Master Name</th>
+						<th scope="col">Manager Name</th>
+						<th scope="col">Manager Mobile</th>
+
+					</tr>
+				</thead>
+				<tbody>
+					{% for d in data %}
+					{% if d.payment_status == 'failure' %}
+					<tr  class="text-danger" >
+					{% elif d.payment_status == 'success' %}
+					<tr  class="text-success" >
+					{% else %}
+					<tr>
+					{% endif %}
+						<th scope="row">{{ forloop.counter}}</th>
+						<td>{{d.txnid}}</td>
+						<td >{{d.payment_status}}</td>
+						<td >{{d.order_status}}</td>
+
+						<td>{{d.amount_service}}+{{d.amount_sah}}</td>
+						<td>{{d.service_provider_id.name}}</td>
+						<td>{{d.service_provider_id.manager_id.name}}</td>
+						<td>{{d.service_provider_id.manager_id.mobile}}</td>
+
+					</tr>
+					{% endfor %}
+				</tbody>
+				{% endif %}
+
+			</table>
+
+		</div>
+		<!--/.col-->
+
+
+		<!--/.col-->
+
+	</div>
+
+</div>
+</div>
+<!--/.main-->
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'Ebase.html' %}
+{% load static %}
+{% block body %}
+<div class="service_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+
+            </div>
+        </div>
+
+        <div class="white_bg_pos">
+            <div class="row">
+                <div class="col-xl-12" id="display">
+
+                    {% for d in data %}
+
+                    <div class="single_service d-flex justify-content-between align-items-center">
+                        <div class="service_inner d-flex align-items-center">
+                            <span></span>
+                            <p class="h6 mb-3 font-weight-normal mt-2 text-dark">Order of amount {{d.amount_service}}
+                            </p>
+                        </div>
+
+                        {% if d.payment_status == 'success' %}
+                        {% if d.order_status == 'initiated' %}
+                        <p class="h6 mb-3 font-weight-normal mt-2 text-danger">
+                            order not completed yet
+                        </p>
+                        {% elif d.order_status == 'completed' %}
+                        <p class="h6 mb-3 font-weight-normal mt-2 text-success">
+                            Completed
+                        </p>
+                        {% endif%}
+                        {% endif %}
+                        <div>
+                            {% if d.payment_status == 'success' %}
+                            {% if d.order_status == 'initiated' %}
+                            <a href="/master/orderdetail?id={{d.txnid}}">
+                                <button class="btn-success">
+                                    Get Details And complete it now>>
+                                </button>
+                            </a>
+                            {% elif d.order_status == 'completed' %}
+                            {% if d.order_rating == 0 %}
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            {% endif %}
+                            {% if d.order_rating == 1 %}
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            {% endif %}
+                            {% if d.order_rating == 2 %}
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            {% endif %}
+                            {% if d.order_rating == 3 %}
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            {% endif %}
+                            {% if d.order_rating == 4 %}
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star-o"></i>
+                            {% endif %}
+                            {% if d.order_rating == 5 %}
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            {% endif %}
+
+                            {% endif%}
+                            {% endif %}
+
+                        </div>
+                    </div>
+
+                    </a>
+                    {% empty %}
+
+                    <p class="h3 mb-3 font-weight-normal mt-2 text-dark">
+                        keep waiting people find you soon
+                        <br></p>
+                    <p class="h4 mb-3 font-weight-normal mt-2 text-success">
+                        Income is one step Ahead
+                    </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+
+
+
+{% endblock %}

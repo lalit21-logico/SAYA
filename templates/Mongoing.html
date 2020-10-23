@@ -1,0 +1,51 @@
+{% extends 'Mbase.html' %}
+{% load static %}
+{% block body %}
+<div class="service_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                
+            </div>
+        </div>
+        <div class="white_bg_pos">
+            {% for d in data %}
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="single_service d-flex justify-content-between align-items-center">
+                        <div class="service_inner d-flex align-items-center">
+                            <a href="/manager/masterprofile?id={{d.service_provider_id.service_provider_id}}"> 
+                            <div class="thumb">
+                                <img src="media/{{d.service_provider_id.image}}" alt="">
+                            </div>
+                            </a>
+                            <a href="/manager/masterprofile?id={{d.service_provider_id.service_provider_id}}"> 
+                            <span>{{d.service_provider_id.name}}</span>
+                            </a>
+                        </div>
+                        {% if d.order_status == 'initiated' %}
+                        <p class="h6 mb-3 font-weight-normal mt-2 text-dark">
+                        Order at - <span class="text-danger">{{d.created_at}}</span>
+                        </p> 
+                        
+                            
+                        
+                        
+                        {% endif %}
+                        <p class="font-weight-normal mt-2 text-warning">{{d.service_provider_id.mobile}}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+
+                        <p class="h3 mb-3 font-weight-normal mt-2 text-dark">
+                            keep waiting no oders Ongoing now
+                            <br></p>
+                        <p class="h4 mb-3 font-weight-normal mt-2 text-success">
+                            Connected with us......
+                        </p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

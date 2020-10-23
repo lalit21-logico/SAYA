@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+<div class="bradcam_area breadcam_bg overlay2">
+    <div class="popup_box ">
+        <div class="popup_inner">
+            <h3> OTP Verification And New Password </h3>
+            <form action="getotp" method="post">
+                <div class="row">
+                    {% csrf_token%}
+                    <p class="h6 mb-3 font-weight-normal mt-2 text-success"> Otp sent to {{email}} </p>
+                    <p class="h6 mb-3 font-weight-normal mt-2 text-danger"> {{msg}} </p>
+                    <div class="col-xl-12">
+
+                        <input type="OTP" class="form-input" name="otp" id="otp" placeholder="OTP" autofocus required>
+                        <input type="password" class="form-input" name="password" id="password" placeholder="Enter new Password" autofocus required>
+               
+                        <hr>
+
+                    </div>
+                </div>
+                <div class="col-xl-12">
+                    <button type="submit" class="boxed-btn3">Check OTP & change password</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,237 @@
+{% extends 'Ubase.html' %}
+{% load static %}
+{% block body %}
+<div class="service_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+
+            </div>
+        </div>
+        <div class="white_bg_pos">
+            {% for d in data %}
+            <div class="card">
+                <div class="mr-auto">
+                </div>
+                <div class="card-body">
+                    <div class="card-title mb-6">
+                        <div class="d-flex justify-content-start">
+                            <div class="image-container">
+                                <img src="media/{{d.service_provider_id.image}}" id="imgProfile"
+                                    style="width: 150px; height: 150px" class="img-thumbnail" />
+                            </div>
+                            <div class="userData ml-3">
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-sm-3 col-md-3 col-5">
+                                    <label style="font-weight:bold;">
+                                        Order Status</label>
+                                </div>
+                                <div class="col-md-9 col-6">
+                                    {% if d.payment_status == 'failure' %}
+                                    <p class="h6 mb-3 font-weight-normal mt-2 text-danger">
+                                        Payment Failed Try other
+                                    </p>
+                                    {% elif d.payment_status == 'success' %}
+                                    {% if d.order_status == 'initiated' %}
+                                    <p class="h6 mb-3 font-weight-normal mt-2 text-warning">
+                                        Order Initiated
+                                        <br>
+                                        Service provider connected to you soon
+                                        <br>
+                                        or you may contact.
+                                    </p>
+                                    {% elif d.order_status == 'completed' %}
+
+                                    <p class="h6 mb-3 font-weight-normal mt-2 text-success">
+                                        Completed
+                                    </p>
+                                    {% endif %}
+                                    {% endif %}
+
+
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-3 col-md-3 col-5">
+                                    <label style="font-weight:bold;">Contact</label>
+                                </div>
+                                <div class="col-md-9 col-6">
+
+                                    <p class="h6 mb-3 font-weight-normal mt-2 text-primary">
+                                        {% if d.order_status == 'initiated' %}
+                                        {% if d.payment_status == 'success' %}
+                                        {{d.service_provider_id.name}}
+                                        <br>
+                                        {{d.service_provider_id.mobile}}
+                                        {% endif %}
+                                        {% elif d.order_status == 'completed' %}
+                                        Order Completd <br>
+                                        contact not Available
+                                        {% endif %}
+                                    </p>
+
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-3 col-md-3 col-5">
+                                    <label style="font-weight:bold;">Payment</label>
+                                </div>
+                                <div class="col-md-9 col-6">
+                                    {% if d.order_status == 'initiated' %}
+                                    {% if d.payment_status == 'success' %}
+                                    <p class="h6 mb-3 font-weight-normal mt-2 text-success">
+                                        Paid: = {{d.amount_sah}}
+                                    </p>
+                                    <br>
+                                    <p class="h6 mb-3 font-weight-normal mt-2 text-danger">
+                                        Due: = {{d.amount_service}} (Pay amount at your home)
+                                    </p>
+                                    {% endif %}
+                                    {% elif d.order_status == 'completed' %}
+                                    <p class="h6 mb-3 font-weight-normal mt-2 text-success">
+                                        Paid: {{d.amount_sah}} + {{d.amount_service}}
+                                    </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3 col-md-3 col-5">
+                                    <label style="font-weight:bold;">Rate Service Provider</label>
+                                </div>
+                                <div id="rat_div" class="col-md-9 col-6">
+                                    {% if d.order_status == 'completed' %}
+                                    {% if d.order_rating == None %}
+                                    <button type="button" id="5,{{d.txnid}}" onClick="btnSubmit(this.id)"
+                                        class="btn btn-outline-warning">
+                                        5
+                                    </button>
+                                    <button type="button" id="4,{{d.txnid}}" onClick="btnSubmit(this.id)"
+                                        class="btn btn-outline-warning">
+                                        4
+                                    </button>
+                                    <button type="button" id="3,{{d.txnid}}" onClick="btnSubmit(this.id)"
+                                        class="btn btn-outline-warning">
+                                        3
+                                    </button>
+                                    <button type="button" id="2,{{d.txnid}}" onClick="btnSubmit(this.id)"
+                                        class="btn btn-outline-warning">
+                                        2
+                                    </button>
+                                    <button type="button" id="1,{{d.txnid}}" onClick="btnSubmit(this.id)"
+                                        class="btn btn-outline-warning">
+                                        1
+                                    </button>
+
+                                    {% else %}
+                                    {% if d.order_rating == 0 %}
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    {% endif %}
+                                    {% if d.order_rating == 1 %}
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    {% endif %}
+                                    {% if d.order_rating == 2 %}
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    {% endif %}
+                                    {% if d.order_rating == 3 %}
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    {% endif %}
+                                    {% if d.order_rating == 4 %}
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    {% endif %}
+                                    {% if d.order_rating == 5 %}
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    {% endif %}
+                                    {% endif %}
+                                    {% elif d.order_status == 'initiated' %}
+                                    <p class="h6 mb-3 font-weight-normal mt-2 text-warning"> you can rate after complete
+                                        order
+                                    </p>
+                                    {% endif %}
+
+
+
+                                </div>
+                            </div>
+
+                            <hr />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    // $(document).ready(function () {
+
+
+    function btnSubmit(clicked_id) {
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'rating' %}",
+            data: {
+                "id": clicked_id,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function (response) {
+                $('#rat_div').empty();
+                for (var key in response.data) {
+                    var temp = '';
+                    for (i = 0; i <= 4; i++) {
+                        if (response.data[key].order_rating <= 0)
+                            temp += '<i class="fa fa-star-o"></i>';
+                        else
+                            temp += '<i class="fa fa-star"></i>';
+                        response.data[key].order_rating -= 1;
+                    }
+                }
+                $('#rat_div').append(temp);
+
+            },
+            error: function (response) {
+                alert("no data")
+            }
+        });
+    };
+    // });
+</script>
+{% endblock %}

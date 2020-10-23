@@ -1,0 +1,44 @@
+{% extends 'Ebase.html' %}
+{% load static %}
+{% block body %}
+<div class="service_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="section_title3 padding_plus text-center mb-90">
+                    <h3>Add Service</h3>
+                </div>
+            </div>
+        </div>
+        <div class="white_bg_pos">
+            <div class="col-xl-12 ">
+                <div class="popup_inner">
+                    <h3> Add service </h3>
+                    <form class="contact-form" action="addService" method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            {% csrf_token%}
+                            <div class="col-xl-12">
+                                <p class="h6 mb-3 font-weight-normal mt-2 text-danger"> {{msg}} </p>
+                                <input type="text" class="form-input text-dark" name="service_name" id="name"
+                                    placeholder="Service Name" autofocus required value="{{service_name}}">
+                                <input type="text" class="form-input text-dark" name="price" id="price"
+                                    placeholder="Price of service in Rs.." autofocus required value="{{price}}">
+                                <label>Add Service image (optional)</label>
+                                <input type="file" name="myfile" accept="image/x-png,image/gif,image/jpeg" class="form-control file-upload-info"
+                                    id="customFileLang" placeholder="Upload image" >
+                                <textarea class="form-control w-100" name="information" id="message" cols="30" rows="9" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Message'" placeholder="discription of service" required></textarea>
+
+                            </div>
+
+                        </div>
+                        <div>
+                            <button type="submit" value="Add" class="boxed-btn3">ADD</button>
+                        </div>
+                    </form>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

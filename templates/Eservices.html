@@ -1,0 +1,64 @@
+{% extends 'Ebase.html' %}
+{% load static %}
+{% block body %}
+<div class="service_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+
+            </div>
+        </div>
+        <div class="white_bg_pos">
+            <div class="col-xl-12">
+                <div class="btn text-center">
+                    <a class="boxed-btn3 " href="/master/addService">Add Service </a>
+                    {% if available_status == 'disable' %}
+                    <a class="btn btn-success" href="/master/changestatus">Active me </a>
+                    <br>
+                    <p class="h6 mb-3 font-weight-normal mt-2 text-danger"> {{msg1}} </p>
+                    {% else %}
+                    <a class="btn btn-danger" href="/master/changestatus">Disable me </a>
+                    <br>
+                    <p class="h6 mb-3 font-weight-normal mt-2 text-success"> {{msg1}} </p>
+                    {% endif %}
+                </div>
+
+                <hr>
+                <p class="h6 mb-3 font-weight-normal mt-2 text-success"> {{msg}} </p>
+            </div>
+            {% for d in data %}
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="single_service d-flex justify-content-between align-items-center">
+                        <div class="service_inner d-flex align-items-center">
+                            <a href="/master/serviceprofile?id={{d.service_id}}">
+                                <div class="thumb" style="padding-right: 20px">
+                                    <img src="../media/{{d.image}}" alt="*">
+                                </div>
+                            </a>
+                            <a href="/master/serviceprofile?id={{d.service_id}}">
+                                <span>{{d.name_of_service}}</span>
+                            </a>
+                        </div>
+                        {% if d.service_status == 'active' %}
+                        <p class="h6 mb-3 font-weight-normal mt-2 text-success"> active </p>
+                        {% else %}
+                        <p class="h6 mb-3 font-weight-normal mt-2 text-danger"> disable by you </p>
+                        {% endif %}
+                        <p>Service price Rs…………….{{d.price}}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+
+            <p class="h3 mb-3 font-weight-normal mt-2 text-dark">
+                Add your services people finds you.
+                <br></p>
+            <p class="h4 mb-3 font-weight-normal mt-2 text-success">
+                Income is one step Ahead
+            </p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

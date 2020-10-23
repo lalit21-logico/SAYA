@@ -1,0 +1,71 @@
+{% extends 'Ubase.html' %}
+{% load static %}
+{% block body %}
+<div class="service_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+
+            </div>
+        </div>
+
+        <div class="white_bg_pos">
+            <p class="h6 mb-3 font-weight-normal mt-2 text-success"> {{flashS}}</p>
+            <p class="h6 mb-3 font-weight-normal mt-2 text-danger"> {{flashF}}</p>
+            <div class="row">
+                <div class="col-xl-12">
+
+                    {% for d in data %}
+
+                    <div class="single_service d-flex justify-content-between align-items-center">
+                        <div class="service_inner d-flex align-items-center">
+                            <div class="thumb">
+                                <img src="media/{{d.service_provider_id.image}}" alt="No Profile"
+                                    class="img-thumbnail" style="margin-bottom:5px;">
+                            </div>
+                            <span></span>
+
+                            <p>{{d.service_provider_id.shopname}}
+                            </p>
+                        </div>
+                        {% if d.payment_status == 'failure' %}
+                        <p class="h6 mb-3 font-weight-normal mt-2 text-danger">
+                            Payment Failed
+                        </p>
+                        {% elif d.payment_status == 'success' %}
+                        {% if d.order_status == 'initiated' %}
+                        <p class="h6 mb-3 font-weight-normal mt-2 text-primary">
+                            {{d.service_provider_id.name}}
+                            <br>
+                            {{d.service_provider_id.mobile}}
+                        </p>
+                        {% elif d.order_status == 'completed' %}
+                        <p class="h6 mb-3 font-weight-normal mt-2 text-success">
+                            Completed
+                        </p>
+                        {% endif%}
+                        {% endif %}</p>
+                        <div>
+                            <a href="/orderdetail?id={{d.txnid}}">
+                                <button class="btn-success">
+                                    Details>>
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+
+                    <p class="h3 mb-3 font-weight-normal mt-2 text-dark">
+                        No Order placed.
+                        <br></p>
+                    <p class="h4 mb-3 font-weight-normal mt-2 text-success">
+                        place oders  now!
+                    </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock%}

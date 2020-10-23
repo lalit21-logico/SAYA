@@ -1,0 +1,63 @@
+{% extends 'Ubase.html' %}
+{% load static %}
+{% block body %}
+<div class="bradcam_area breadcam_bg overlay2">
+    <h3>contact us</h3>
+    <p class="h6 mb-3 font-weight-normal mt-2 text-success">{{msg}}</p>
+</div>
+<!-- bradcam_area_end -->
+
+<!-- ================ contact section start ================= -->
+<section class="contact-section">
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="contact-title">Get in Touch</h2>
+        </div>
+        <div class="col-lg-8">
+            <form class="form-contact contact_form" action="contact" method="post" >
+                {% csrf_token%}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <input class="form-control" name="subject" id="subject" type="text" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Subject'" placeholder="Enter Subject">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <textarea class="form-control w-100" name="message" id="message" cols="30" rows="9" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Message'" placeholder=" Write Compliments  or Complains"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group mt-3">
+                    <button type="submit" class="button button-contactForm boxed-btn">Send</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-lg-3 offset-lg-1">
+            <!--<div class="media contact-info">-->
+            <!--    <span class="contact-info__icon"><i class="ti-home"></i></span>-->
+            <!--    <div class="media-body">-->
+            <!--        <h3>Vijayawada, Dehradun.</h3>-->
+            <!--        <p>Indore, CA 91770</p>-->
+            <!--    </div>-->
+            <!--</div>-->
+            <!--<div class="media contact-info">-->
+            <!--    <span class="contact-info__icon"><i class="ti-tablet"></i></span>-->
+            <!--    <div class="media-body">-->
+            <!--        <h3>87239438XXXX</h3>-->
+            <!--        <p>Mon to Fri 9am to 9pm</p>-->
+            <!--    </div>-->
+            <!--</div>-->
+            <div class="media contact-info">
+                <span class="contact-info__icon"><i class="ti-email"></i></span>
+                <div class="media-body">
+                    <h3>salonatyourabode@gmail.com</h3>
+                    <p>Send us your query anytime!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+{% endblock %}

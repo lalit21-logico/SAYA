@@ -1,0 +1,96 @@
+{% extends 'Ebase.html' %}
+{% load static %}
+{% block body %}
+<div class="service_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+
+            </div>
+        </div>
+        
+
+        <div class="white_bg_pos">
+            <a href='/master'>
+                <button class="btn btn-outline-dark">
+                    << </button>
+            </a>
+            <div class="row">
+                <div class="col-md-4 col-sm-6">
+                    <div class="counter purple">
+                        <div class="counter-content">
+                            <div class="counter-icon">
+                                <i class="fa fa-money"></i>
+                            </div>
+                            <h5>last 365 days</h5>
+                            <span class="counter-value">{{Earnyear}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="counter purple">
+                        <div class="counter-content">
+                            <div class="counter-icon">
+                                <i class="fa fa-money"></i>
+                            </div>
+                            <h5>Last 30 days</h5>
+                            <span class="counter-value">{{Earnmonth}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="counter purple">
+                        <div class="counter-content">
+                            <div class="counter-icon">
+                                <i class="fa fa-money"></i>
+                            </div>
+                            <h5>last 24 hour</h5>
+                            <span class="counter-value">{{Earntoday}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="counter orange">
+                        <div class="counter-content">
+                            <div class="counter-icon">
+                                <i class="fa fa-money"></i>
+                            </div>
+                            <h3>Total</h3>
+                            <span class="counter-value">{{Earntotal}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block script %}
+
+
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<script>
+    // license https://www.bestjquery.com/codelab/
+    $(document).ready(function () {
+        $('.counter-value').each(function () {
+            $(this).prop('Counter', 0).animate({
+                Counter: $(this).text()
+            }, {
+                duration: 3500,
+                easing: 'swing',
+                step: function (now) {
+                    $(this).text(Math.ceil(now));
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

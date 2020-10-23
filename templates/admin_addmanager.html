@@ -1,0 +1,98 @@
+{% extends 'abase.html' %}
+{% load static %}
+{% block body %}
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="#">
+                    <em class="fa fa-home"></em>
+                </a></li>
+            <li class="active">Add Manger</li>
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4">
+            <div class="login-panel panel panel-default">
+                <div class="panel-heading">ADD MANAGER</div>
+                <div class="panel-body">
+                    <p class="text-danger">{{msg}}</p>
+                    <p class="text-success">{{msg1}}</p>
+
+                    <form action="addManager" method="post">
+                        {% csrf_token %}
+                        <fieldset>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="user_name" id="name"
+                                    placeholder="Your Name" autofocus required value="{{user_name}}">
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-control" name="email" id="email"
+                                    placeholder="Your Email" value="{{email}}" autofocus required>
+                            </div>
+                            <div class="form-group">
+                                <input type="mobile" class="form-control" name="mobile" id="mobile"
+                                    placeholder="Mobile no ..... don't write country code" value="{{mobile}}" autofocus
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <input type="address" class="form-control" name="address" id="address"
+                                    placeholder="Address" value="{{address}}" autofocus required>
+                            </div>
+                            <div class="form-group">
+                                <input type="upi" class="form-control" name="upi" placeholder="Enter your UPI  "
+                                    value="{{upi}}" autofocus required>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" id="default-select" class="" name="gender"
+                                    value="{{gender}}" autofocus required>
+                                    {% if gender != None %}
+                                    <option value="{{gender}}">{{gender}}</p>
+                                    </option>
+                                    {% else %}
+                                    <option value="">Gender<p class="h6 mb-3 font-weight-normal mt-2 text-danger">*</p>
+                                    </option>
+                                    {% endif %}
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" id="default-select" class="" name="district"
+                                    value="{{district}}" autofocus required>
+                                    {% if district != None %}
+                                    <option value="{{district}}">{{district}}</p>
+                                    </option>
+                                    {% else %}
+                                    <option value="">District<p class="h6 mb-3 font-weight-normal mt-2 text-danger">*
+                                        </p>
+                                    </option>
+                                    {% endif %}
+                                    {% for d in district_list %}
+                                    <option value="{{d.district}}">{{d.district}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" name="password" id="password" pattern=".{8,16}" placeholder="Password" required title="8 to 16 characters" autofocus>
+
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" name="re_password" id="re_password"
+                                    placeholder="Repeat your password" aria-valuemin="8" required>
+                            </div>
+
+                            <div class="col-xl-12">
+                                <button type="submit" class="btn btn-primary">Add </button>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div><!-- /.col-->
+    </div>
+
+
+</div>
+
+{% endblock %}
