@@ -30,7 +30,7 @@ SECRET_KEY = ')nm!wa9xsn)^eo3y%w*3vl05^7i!r5&1*nka01n&tmc2ew=rnk'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['saya.pythonanywhere.com',]
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
