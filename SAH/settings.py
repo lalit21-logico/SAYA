@@ -101,8 +101,8 @@ DATABASES = {
 #payment gatway info
 
 PAYU_CONFIG = {
-    "merchant_key": "UdJvTwvv",
-    "merchant_salt": "sV2iPZk06s",
+    "merchant_key": "lSeYpOcC",
+    "merchant_salt": "HlTjeV0FSf",
     "mode": "live",
     "success_url": "https://saya.pythonanywhere.com/payu_success",
     "failure_url": "https://saya.pythonanywhere.com/payu_failure"

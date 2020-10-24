@@ -1,5 +1,5 @@
 PAYU_CONFIG = {
-        "merchant_key": "UdJvTwvv",
-        "merchant_salt": "sV2iPZk06s",
+        "merchant_key": "lSeYpOcC",
+        "merchant_salt": "HlTjeV0FSf",
         "mode": "live",
   }
