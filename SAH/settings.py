@@ -98,6 +98,7 @@ DATABASES = {
     }
 }
 
+
 #payment gatway info
 
 PAYU_CONFIG = {
