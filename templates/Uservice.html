@@ -39,32 +39,46 @@
                     </button>
                     {% if request.session.salon_type != 'Male' %}
                     <a href="type_salon?id=Male">
-                        <button type="button" class="btn btn-outline-danger">
-                            <i class="fa fa-male"></i>
+                        <button type="button" class="btn btn-outline-dark">
+                           M <i class="fa fa-male"></i>
 
                         </button>
                     </a>
                     {% else %}
-                    <button type="button" class="btn btn-danger">
-                        <i class="fa fa-male"></i>
+                    <button type="button" class="btn btn-dark">
+                       M <i class="fa fa-male"></i>
 
                     </button>
                     {% endif %}
                     {% if request.session.salon_type != 'Female' %}
                     <a href="type_salon?id=Female">
+                        <button type="button" class="btn btn-outline-danger">
+                            F<i class="fa fa-female"></i>
+
+                        </button>
+                    </a>
+                    {% else %}
+                    <button type="button" class="btn btn-danger">
+                        F<i class="fa fa-male"></i>
+
+                    </button>
+                    {% endif %}
+                    
+                    {% if request.session.salon_type != 'MehArt' %}
+                    <a href="type_salon?id=MehArt">
                         <button type="button" class="btn btn-outline-primary">
-                            <i class="fa fa-female"></i>
+                        Mehendi Artist
 
                         </button>
                     </a>
                     {% else %}
                     <button type="button" class="btn btn-primary">
-                        <i class="fa fa-male"></i>
+                        Mehendi Artist
 
                     </button>
                     {% endif %}
-
-
+                    
+                    
                     <div id="display1">
                         {% for d in data %}
                         <a href="getservice?id={{d.service_provider_id}}">

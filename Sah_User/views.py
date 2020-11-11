@@ -291,6 +291,8 @@ def salon(request):
         data = sah_service_provider.objects.filter(verification_status='active',available_status='active',district = district).exclude(salontype = 'Female').order_by('?')
     if request.session.get('salon_type') == 'Female':
         data = sah_service_provider.objects.filter(verification_status='active',available_status='active',district = district).exclude(salontype = 'Male').order_by('?')
+    if request.session.get('salon_type') == 'MehArt':
+        data = sah_service_provider.objects.filter(verification_status='active',available_status='active',district = district, salontype='MehArt').order_by('?')
     if request.session.get('salon_type') == None:
         data = sah_service_provider.objects.filter(verification_status='active',available_status='active',district = district).order_by('?')
     return render(request,'Uservice.html',{'salon':'active','data':data})
