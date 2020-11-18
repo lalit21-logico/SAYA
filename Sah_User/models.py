@@ -1,5 +1,16 @@
 from django.db import models
 from django.utils.timezone import now
+from io import BytesIO
+from PIL import Image
+from django.core.files import File
+
+
+def compress(image):
+    im = Image.open(image)
+    im_io = BytesIO() 
+    im.save(im_io, 'JPEG', quality=10)
+    new_image = File(im_io, name=image.name)
+    return new_image
 
 # Create your models here.
 class sah_user(models.Model):
@@ -58,6 +69,12 @@ class sah_service_provider(models.Model):
     password = models.CharField(max_length=50, null=True)
     manager_commision = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        new_image = compress(self.image)
+        self.image = new_image
+        super().save(*args, **kwargs)
+        
     class Meta:
         db_table = "sah_service_provider"
 
@@ -70,8 +87,15 @@ class service(models.Model):
     service_status = models.CharField(max_length=10,default='active')
     service_provider_id = models.ForeignKey(sah_service_provider,null=True,blank=True,on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    def save(self, *args, **kwargs):
+        new_image = compress(self.image)
+        self.image = new_image
+        super().save(*args, **kwargs)
+
     class Meta:
         db_table = "service"
+    
 
 class cartlist(models.Model):
     temp_id = models.AutoField(primary_key=True)
