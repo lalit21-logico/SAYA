@@ -116,12 +116,8 @@ def addmember(request):
             msg = 'Password not match!'
             return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'salontype':salontype,'district':district,'district_list':district_data})
         emailcounts = sah_service_provider.objects.filter(email= email).count()
-        mobilecount = sah_service_provider.objects.filter(mobile= mobile).count()
         if emailcounts == 1:
             msg = 'Email already exisit with other account!'
-            return render(request,'Maddmember.html',{'msg':msg,'signup':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'salontype':salontype,'district':district,'district_list':district_data})
-        if mobilecount == 1:
-            msg = 'Mobile number already exisit with other account!'
             return render(request,'Maddmember.html',{'msg':msg,'signup':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'salontype':salontype,'district':district,'district_list':district_data})
         x = random.randint(999,10000)
         files = request.FILES['myfile']
