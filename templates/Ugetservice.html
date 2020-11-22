@@ -44,6 +44,11 @@
                     </div>
                 </div>
                 <div id="cartlist" class="col-xl-6">
+                    <hr>
+                    <hr>
+                    Services you Selected
+                    <hr>
+                    <hr>
                     {% if cartitem == 'empty' %}
                     <a href="#null">
                         {% else %}
@@ -97,6 +102,8 @@
 
 
     function btnSubmit(clicked_id) {
+        var elmnt = document.getElementById("cartlist");
+        elmnt.scrollIntoView();
         $.ajax({
             type: 'POST',
             url: "{% url 'cartlistr' %}",
@@ -107,6 +114,12 @@
             success: function (response) {
                 $('#cartlist').empty();
                 var tempo = '';
+
+                tempo += '<hr>';
+                tempo += '<hr>';
+                tempo += 'Services you Selected';
+                tempo += '<hr>';
+                tempo += '<hr>';
                 tempo += '<a href="/placeorder">';
                 tempo += '<button type="button" class="btn btn-outline-warning">';
                 tempo += 'Place order';
@@ -149,6 +162,11 @@
             success: function (response) {
                 $('#cartlist').empty();
                 var tempo = '';
+                tempo += '<hr>';
+                tempo += '<hr>';
+                tempo += 'Services you Selected';
+                tempo += '<hr>';
+                tempo += '<hr>';
                 if(response.cartitem == 'empty'){
                     tempo += '<a href="#null">';
                 }else{
