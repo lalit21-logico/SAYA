@@ -88,58 +88,59 @@
                                     <div class="thumb">
                                         <img src="media/{{d.image}}" alt="No Profile" class="img-thumbnail">
                                     </div>
-                                    <span>{{d.shopname}}</span>
+                                    <div class="p-rating col-md-3">
+
+                                        {% if d.rating == 0 %}
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        {% endif %}
+                                        {% if d.rating == 1 %}
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        {% endif %}
+                                        {% if d.rating == 2 %}
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        {% endif %}
+                                        {% if d.rating == 3 %}
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        {% endif %}
+                                        {% if d.rating == 4 %}
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        {% endif %}
+                                        {% if d.rating == 5 %}
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        {% endif %}
+
+                                    </div>
                                 </div>
+                                <h4 class="text-truncate"
+                                    style="border: none; text-decoration:underline;overflow: hidden; max-width: 40ch;">
+                                    <abbr title="{{d.shopname}}">{{d.shopname}}</abbr></h4>
                                 <div class="col-md-3">
                                     <p><small>{{d.name}}</small></p>
                                 </div>
-                                <div class="p-rating col-md-3">
-
-                                    {% if d.rating == 0 %}
-                                    <i class="fa fa-star-o"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    {% endif %}
-                                    {% if d.rating == 1 %}
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    {% endif %}
-                                    {% if d.rating == 2 %}
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    {% endif %}
-                                    {% if d.rating == 3 %}
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    {% endif %}
-                                    {% if d.rating == 4 %}
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    {% endif %}
-                                    {% if d.rating == 5 %}
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    {% endif %}
-
-                                </div>
-
                             </div>
                         </a>
                         {% empty %}
@@ -184,16 +185,11 @@
                 for (var key in response.data) {
                     var temp = '';
                     temp += '<a href="getservice?id=' + response.data[key].service_provider_id + '">';
-                    temp += '<div class="single_service d-flex justify-content-between align-items-center btn btn-outline-warning row">'
+                    temp += '<div class="single_service d-flex justify-content-between align-items-center btn btn-outline-dark row">'
                     temp += '<div class="service_inner d-flex align-items-center col-md-4">'
                     temp += '<div class="thumb">'
                     temp += '<img src="media/' + response.data[key].image + '" alt="No Profile" class="img-thumbnail">'
                     temp += ' </div>'
-                    temp += '<span>' + response.data[key].shopname + '</span>'
-                    temp += '</div>'
-                    temp += '<div class="col-md-3">'
-                    temp += '<p><small>' + response.data[key].name + '</small></p>'  
-                    temp += '</div>'
                     temp += ' <div class="p-rating col-md-3">'
                     var i;
                     for (i = 0; i <= 4; i++) {
@@ -203,8 +199,14 @@
                             temp += '<i class="fa fa-star"></i>';
                         response.data[key].rating -= 1;
                     }
-
                     temp += '</div>'
+                    temp += '</div>'
+                    temp += '<h4 class="text-truncate" style="border: none; text-decoration:underline;overflow: hidden; max-width: 40ch;"><abbr title="{{d.shopname}}">' + response.data[key].shopname + '</abbr></h4>'
+                    temp += '<div class="col-md-3">'
+
+                    temp += '<p><small>' + response.data[key].name + '</small></p>'
+                    temp += '</div>'
+
                     temp += '</div>'
                     $('#display1').append(temp);
                 }
