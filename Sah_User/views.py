@@ -367,7 +367,7 @@ def getservice(request):
     if request.method == 'GET':
         service_man_id = request.GET['id']
         data = service.objects.filter(service_provider_id__service_provider_id=service_man_id,service_status = 'active')
-        data1 = cartlist.objects.filter(user_id = request.session['user_id'] ,service_provider_id = service_man_id)
+        data1 = cartlist.objects.filter(user_id = request.session['user_id'] ,service_provider_id = service_man_id).order_by('-temp_id')
         if data1.count() == 0:
             cartitem = 'empty'
         else:
@@ -393,7 +393,7 @@ def cartlistr(request):
         count = cartlist.objects.filter(service_id__service_id=service_id,user_id=user.user_id).count()
         if count == 0:
             cartlist(user_id = user.user_id,service_provider_id = service_prov_id, service_id =service_ob).save()
-        data = cartlist.objects.filter(user_id = user.user_id,service_provider_id = service_prov_id)
+        data = cartlist.objects.filter(user_id = user.user_id,service_provider_id = service_prov_id).order_by('-temp_id')
         data = list(data.values('temp_id','service_id__service_id','service_id__name_of_service', 'service_id__price','service_provider_id','service_id__image'))
     return JsonResponse({'data':data})
 
@@ -405,7 +405,7 @@ def cartlistrRemove(request):
         user_id = request.session['user_id']
         temp_id = request.POST['id']
         cartlist.objects.filter(user_id = user_id,temp_id = temp_id).delete()
-        data = cartlist.objects.filter(user_id = user_id)
+        data = cartlist.objects.filter(user_id = user_id).order_by('-temp_id')
         if data.count() == 0:
             cartitem = 'empty'
         else:
