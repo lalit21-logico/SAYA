@@ -70,6 +70,7 @@ class sah_service_provider(models.Model):
     manager_id = models.ForeignKey(sah_area_manager,null=True,blank=True,on_delete=models.CASCADE)
     password = models.CharField(max_length=50, null=True)
     manager_commision = models.IntegerField(blank=True, null=True)
+    Pincode = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):

@@ -82,49 +82,50 @@ def addmember(request):
         email = request.POST['email']
         mobile = request.POST['mobile']
         address = request.POST['address']
+        Pincode = request.POST['Pincode']
         salontype = request.POST['salontype']
         district = request.POST['district']
         password = request.POST['password']
         if user_name == None:
             msg = 'blank name invalid'
-            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'salontype':salontype,'district':district,'district_list':district_data})
+            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'Pincode':Pincode,'salontype':salontype,'district':district,'district_list':district_data})
         if shopname == None:
             msg = 'blank Shop name invalid'
             return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'salontype':salontype,'district':district,'district_list':district_data})
         if email == None:
             msg = 'blank email invalid'
-            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'salontype':salontype,'district':district,'district_list':district_data})
+            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'Pincode':Pincode,'salontype':salontype,'district':district,'district_list':district_data})
         if mobile == None:
             msg = 'blank mobile number invalid'
-            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'salontype':salontype,'district':district,'district_list':district_data})
+            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'Pincode':Pincode,'salontype':salontype,'district':district,'district_list':district_data})
         if address == None:
             msg = ' address invalid'
-            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'salontype':salontype,'district':district,'district_list':district_data})
+            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'Pincode':Pincode,'salontype':salontype,'district':district,'district_list':district_data})
         if salontype == None:
             msg = 'select salontype'
-            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname': shopname,'email':email,'mobile':mobile,'address':address,'salontype':salontype,'district':district,'district_list':district_data})
+            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname': shopname,'email':email,'mobile':mobile,'address':address,'Pincode':Pincode,'salontype':salontype,'district':district,'district_list':district_data})
         if district == None:
             msg = 'select district'
-            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'salontype':salontype,'district':district,'district_list':district_data})
+            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'Pincode':Pincode,'salontype':salontype,'district':district,'district_list':district_data})
         if len(mobile) <= 9:
             msg = 'Mobile number not valid'
-            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'salontype':salontype,'district':district,'district_list':district_data})
+            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'Pincode':Pincode,'salontype':salontype,'district':district,'district_list':district_data})
         if len(password) <=  7:
             msg = 'Password too short!'
-            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'salontype':salontype,'district':district,'district_list':district_data})
+            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'Pincode':Pincode,'salontype':salontype,'district':district,'district_list':district_data})
         if password != request.POST['re_password']:
             msg = 'Password not match!'
-            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'salontype':salontype,'district':district,'district_list':district_data})
+            return render(request,'Maddmember.html',{'msg':msg,'myteam':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'Pincode':Pincode,'salontype':salontype,'district':district,'district_list':district_data})
         emailcounts = sah_service_provider.objects.filter(email= email).count()
         if emailcounts == 1:
             msg = 'Email already exisit with other account!'
-            return render(request,'Maddmember.html',{'msg':msg,'signup':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'salontype':salontype,'district':district,'district_list':district_data})
+            return render(request,'Maddmember.html',{'msg':msg,'signup':'active','user_name':user_name, 'shopname':shopname,'email':email,'mobile':mobile,'address':address,'Pincode':Pincode,'salontype':salontype,'district':district,'district_list':district_data})
         x = random.randint(999,10000)
         files = request.FILES['myfile']
         files.name = 'img'+str(x)+files.name
         image = files
         manager_ob = sah_area_manager.objects.get(email = request.session.get('Muser_email'))
-        sah_service_provider(name = user_name,shopname = shopname, image = image, email = email, mobile = mobile, address = address,salontype = salontype,district = district ,rating = None, manager_id = manager_ob, password = password, verification_status = 'active' ).save()
+        sah_service_provider(name = user_name,shopname = shopname, image = image, email = email, mobile = mobile, address = address,salontype = salontype,district = district ,rating = None, manager_id = manager_ob, password = password, verification_status = 'active', Pincode= Pincode ).save()
         msg = 'add member succesfull'
         manager_email = request.session.get('Muser_email')
         data = sah_service_provider.objects.filter(manager_id__email = manager_email).order_by('-service_provider_id')
