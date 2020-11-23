@@ -13,13 +13,46 @@
             <div class="row">
 
                 <div class="col-xl-12">
-                    <form class="form-inline my-2 my-lg-0">
-                        <a href="/salon">
-                            <button type="button" class="btn btn-outline-success">
-                                Home
-                            </button>
-                        </a>
-                    </form>
+                    <div class="row">
+                        <form class="form-inline my-2 my-lg-0">
+                            <a href="/salon">
+                                <button type="button" class="btn btn-outline-success">
+                                    Salon
+                                </button>
+                            </a>
+                        </form>
+                        {% if request.session.Pincode == None %}
+                        <form action="pinset" method="post">
+                            {% csrf_token%}
+                            <div class="form-inline my-2 my-lg-0" style="padding-top: 16px;padding-left: 5px;">
+                                <div class="input-group mb-3">
+                                    <input type="number" min="0"  class="form-control" placeholder="Set Area Pincode filter"
+                                        name="Pincode" onfocus="this.placeholder = ''"
+                                        onblur="this.placeholder = 'Set Area Pincode filter'">
+                                    <div class="input-group-append">
+                                        <button class="btn" type="submit">SET</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        {% else %}
+                        <form action="pinset" method="get">
+                            {% csrf_token%}
+                            <div class="form-inline my-2 my-lg-0" style="padding-top: 16px;padding-left: 5px;">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Set Area Pincode filter"
+                                        name="Pincode" onfocus="this.placeholder = ''"
+                                        onblur="this.placeholder = 'Set Area Pincode filter'"
+                                        value="{{request.session.Pincode}}">
+                                    <div class="input-group-append">
+                                        <a href="/pinset"> <button class="btn">UNSET</button> </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        {% endif %}
+                    </div>
+
                     <hr>
                     <button type="button" id="5" onClick="btnSubmit(this.id)" class="btn btn-outline-warning">
                         5
@@ -40,14 +73,12 @@
                     {% if request.session.salon_type != 'Male' %}
                     <a href="type_salon?id=Male">
                         <button type="button" class="btn btn-outline-dark">
-                           M <i class="fa fa-male"></i>
-
+                            M <i class="fa fa-male"></i>
                         </button>
                     </a>
                     {% else %}
                     <button type="button" class="btn btn-dark">
-                       M <i class="fa fa-male"></i>
-
+                        M <i class="fa fa-male"></i>
                     </button>
                     {% endif %}
                     {% if request.session.salon_type != 'Female' %}
@@ -59,15 +90,15 @@
                     </a>
                     {% else %}
                     <button type="button" class="btn btn-danger">
-                        F<i class="fa fa-male"></i>
+                        F<i class="fa fa-female"></i>
 
                     </button>
                     {% endif %}
-                    
+
                     {% if request.session.salon_type != 'MehArt' %}
                     <a href="type_salon?id=MehArt">
                         <button type="button" class="btn btn-outline-primary">
-                        Mehendi Artist
+                            Mehendi Artist
 
                         </button>
                     </a>
@@ -77,8 +108,8 @@
 
                     </button>
                     {% endif %}
-                    
-                    
+
+
                     <div id="display1">
                         {% for d in data %}
                         <a href="getservice?id={{d.service_provider_id}}">
@@ -212,7 +243,7 @@
                 }
             },
             error: function (response) {
-                alert("no data")
+                alert("no salon for this rating ")
             }
         });
     };

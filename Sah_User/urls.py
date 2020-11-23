@@ -33,6 +33,7 @@ urlpatterns = [
     path('cartlistrRemove',views.cartlistrRemove,name='cartlistrRemove'),
     path('placeorder',views.placeorder),
     path('orderdetail',views.orderdetail),
+    path('pinset',views.pinset),
     path('order_status',views.orderList),
     path('type_salon',views.type_salon),
     path('payu_checkout',views.payu_checkout,name='payu_checkout'),

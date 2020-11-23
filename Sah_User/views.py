@@ -295,6 +295,9 @@ def salon(request):
         data = sah_service_provider.objects.filter(verification_status='active',available_status='active',district = district, salontype='MehArt').order_by('?')
     if request.session.get('salon_type') == None:
         data = sah_service_provider.objects.filter(verification_status='active',available_status='active',district = district).order_by('?')
+    if request.session.get('Pincode') != None:
+            Pincode = int(request.session['Pincode'])
+            data = data.filter(Pincode= Pincode)
     return render(request,'Uservice.html',{'salon':'active','data':data})
 
 def type_salon(request):
@@ -331,6 +334,9 @@ def rating(request):
                 data = sah_service_provider.objects.filter(verification_status='active',available_status='active',district = district).exclude(salontype = 'Male').order_by('?')
             if request.session.get('salon_type') == None:
                 data = sah_service_provider.objects.filter(verification_status='active',available_status='active',district = district).order_by('?')
+            if request.session.get('Pincode') != None:
+                Pincode = int(request.session['Pincode'])
+                data = data.filter(Pincode= Pincode)
             data = list(data.values('service_provider_id', 'name','shopname','image','rating'))
             return JsonResponse({'data':data})
         if request.session.get('salon_type') == 'Male':
@@ -339,6 +345,9 @@ def rating(request):
             data = sah_service_provider.objects.filter(verification_status='active',available_status='active',rating = rating,district = district).exclude(salontype = 'Male').order_by('?')
         if request.session.get('salon_type') == None:
             data = sah_service_provider.objects.filter(verification_status='active',available_status='active',rating = rating,district = district).order_by('?')
+        if request.session.get('Pincode') != None:
+            Pincode = int(request.session['Pincode'])
+            data = data.filter(Pincode= Pincode)
         data = list(data.values('service_provider_id', 'name','shopname','image','rating'))
         return JsonResponse({'data':data})
     if request.method == 'POST':
@@ -359,8 +368,21 @@ def rating(request):
         data = list(data.values('order_rating'))
         return JsonResponse({'data':data})
 
-
-
+def pinset(request):
+    if verification(request):
+        return render(request,'login.html',{'login':'active'})
+    print("ghhhhhhhhhhhhhhhhh")
+    if request.method == 'POST':
+        Pincode = request.POST['Pincode']
+        request.session['Pincode'] = Pincode
+        return salon(request)
+    print("hemlllo")
+    try:
+        request.session['Pincode'] = None
+    except KeyError:
+        pass
+    return salon(request)
+    
 def getservice(request):
     if verification(request):
         return render(request,'login.html',{'login':'active'})
