@@ -33,10 +33,18 @@
                                 </p>
                             </div>
 
+                            {% if request.session.user_email == None %}
+                            <a href="/login">
+                                <button type="button" class="btn btn-outline-success">
+                                    Add
+                                </button>
+                            </a>
+                            {% else %}
                             <button type="button" id="{{d.service_id}}a{{d.service_provider_id.service_provider_id}}"
                                 onClick="btnSubmit(this.id)" class="btn btn-outline-success">
                                 Add
                             </button>
+                            {% endif %}
 
                         </div>
 
@@ -64,8 +72,8 @@
                         <div class="single_service d-flex justify-content-between align-items-center ">
                             <div class="service_inner d-flex align-items-center">
                                 <div class="thumb">
-                                    <img src="media/{{d.service_id.image}}" alt="*"
-                                        class="img-thumbnail" style="margin-bottom:5px;">
+                                    <img src="media/{{d.service_id.image}}" alt="*" class="img-thumbnail"
+                                        style="margin-bottom:5px;">
                                 </div>
                                 <span>{{d.service_id.name_of_service}}</span>
                                 <p>-@Rs--{{d.service_id.price}}
@@ -167,9 +175,9 @@
                 tempo += 'Services you Selected';
                 tempo += '<hr>';
                 tempo += '<hr>';
-                if(response.cartitem == 'empty'){
+                if (response.cartitem == 'empty') {
                     tempo += '<a href="#null">';
-                }else{
+                } else {
                     tempo += '<a href="/placeorder">';
                 }
                 tempo += '<button type="button" class="btn btn-outline-warning">';

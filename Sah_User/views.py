@@ -283,18 +283,18 @@ def contact(request):
     return render(request,'Ucontact.html',{'contact':'active'})
 
 def salon(request):
-    if verification(request):
-        return render(request,'login.html',{'login':'active'})
-    user = sah_user.objects.get(email = request.session['user_email'] )
-    district = user.district
     if request.session.get('salon_type') == 'Male':
-        data = sah_service_provider.objects.filter(verification_status='active',available_status='active',district = district).exclude(salontype = 'Female').order_by('?')
+        data = sah_service_provider.objects.filter(verification_status='active',available_status='active').exclude(salontype = 'Female').order_by('?')
     if request.session.get('salon_type') == 'Female':
-        data = sah_service_provider.objects.filter(verification_status='active',available_status='active',district = district).exclude(salontype = 'Male').order_by('?')
+        data = sah_service_provider.objects.filter(verification_status='active',available_status='active').exclude(salontype = 'Male').order_by('?')
     if request.session.get('salon_type') == 'MehArt':
-        data = sah_service_provider.objects.filter(verification_status='active',available_status='active',district = district, salontype='MehArt').order_by('?')
+        data = sah_service_provider.objects.filter(verification_status='active',available_status='active', salontype='MehArt').order_by('?')
     if request.session.get('salon_type') == None:
-        data = sah_service_provider.objects.filter(verification_status='active',available_status='active',district = district).order_by('?')
+        data = sah_service_provider.objects.filter(verification_status='active',available_status='active').order_by('?')
+    if request.session.get('user_email') != None:
+        user = sah_user.objects.get(email = request.session['user_email'] )
+        district = user.district
+        data = data.filter(district=district)    
     if request.session.get('Pincode') != None:
             Pincode = int(request.session['Pincode'])
             data = data.filter(Pincode= Pincode)
@@ -369,8 +369,6 @@ def rating(request):
         return JsonResponse({'data':data})
 
 def pinset(request):
-    if verification(request):
-        return render(request,'login.html',{'login':'active'})
     print("ghhhhhhhhhhhhhhhhh")
     if request.method == 'POST':
         Pincode = request.POST['Pincode']
@@ -384,11 +382,11 @@ def pinset(request):
     return salon(request)
     
 def getservice(request):
-    if verification(request):
-        return render(request,'login.html',{'login':'active'})
     if request.method == 'GET':
         service_man_id = request.GET['id']
         data = service.objects.filter(service_provider_id__service_provider_id=service_man_id,service_status = 'active')
+        if request.session.get('user_email') == None:
+            return render(request, 'Ugetservice.html',{'data':data,'cartitem':'empty'})
         data1 = cartlist.objects.filter(user_id = request.session['user_id'] ,service_provider_id = service_man_id).order_by('-temp_id')
         if data1.count() == 0:
             cartitem = 'empty'
@@ -397,8 +395,6 @@ def getservice(request):
     return render(request, 'Ugetservice.html',{'data':data,'data1':data1,'cartitem':cartitem})
 
 def cartlistr(request):
-    if verification(request):
-        return render(request,'login.html',{'login':'active'})
     if request.method == 'POST':
         temp= request.POST['id']
         x = temp.split("a")

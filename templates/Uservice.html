@@ -54,6 +54,7 @@
                     </div>
 
                     <hr>
+                    {% if request.session.user_email != None %}
                     <button type="button" id="5" onClick="btnSubmit(this.id)" class="btn btn-outline-warning">
                         5
                         <i class="fa fa-star-o"></i>
@@ -70,6 +71,7 @@
                         2
                         <i class="fa fa-star-o"></i>
                     </button>
+                    {% endif %}
                     {% if request.session.salon_type != 'Male' %}
                     <a href="type_salon?id=Male">
                         <button type="button" class="btn btn-outline-dark">
