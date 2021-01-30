@@ -73,13 +73,8 @@
 
                         {% endfor %}
                         {% if flashP == 'yes' %}
-                        <span class="text-primary">Saya wallet money offer:-</span>
+                        <span class="text-primary">Saya wallet money used(only use upto 5%):-</span>
                         <br>
-                        <span class="text-success">On cross of thershold of wallet cash 200 </span>
-
-                        <span class="text-success"> this order( only charge 70% + 1 of net amount)</span>
-                        <br>
-                        <span class="text-warning">After succesfull transaction your sah money wallet is 0</span>
                         {% endif %}
                         <div class="form-group">
                             <div class="col-xs-12">
@@ -88,6 +83,16 @@
                             </div>
                         </div>
                         <hr>
+                        {% if flashP == 'yes' %}
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <strong>wallet money used</strong>
+                                <div class="pull-right text-success"><span>RS.</span><span>{{less_amount}}</span></div>
+                            </div>
+                        </div>
+                        <hr>
+                        {% endif %}
+ 
                         <div class="form-group">
                             <div class="col-xs-12">
                                 <strong>Pay later</strong>
