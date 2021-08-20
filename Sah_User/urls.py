@@ -52,6 +52,24 @@ urlpatterns = [
     path('addDistrict',views.addDistrict,name='addDistrict'),
     path('ongoingOrders',views.ongoingOrders,name='ongoingOrders'),
     path('userCount',views.userCount,name='userCount'),
+    ############ android urls.
+    path('hash_genrator',views.hash_genrator,name='hash_genrator'),
+    path('hash_response',views.hash_response,name='hash_response'),
+    path('cartlistAdd',views.cartlistAdd,name='cartlistAdd'),
+    path('cartlistRemove',views.cartlistRemove,name='cartlistRemove'),
+    path('signupAndroid',views.signupAndroid,name='signupAndroid'),
+    path('loginAndroid',views.loginAndroid,name='loginAndroid'),
+    path('logoutAndroid',views.logoutAndroid,name='logoutAndroid'),
+    path('forgotPasswordAndroid',views.forgotPasswordAndroid,name='forgotPasswordAndroid'),
+    path('otpAndroid',views.otpAndroid,name='otpAndroid'),
+    path('contactAndroid',views.contactAndroid,name='contactAndroid'),
+    path('walletAndroid',views.walletAndroid,name='walletAndroid'),
+    path('orderListAndroid',views.orderListAndroid,name='orderListAndroid'),
+    path('getserviceAndroid',views.getserviceAndroid,name='getserviceAndroid'),
+    path('orderdetailAndroid',views.orderdetailAndroid,name='orderdetailAndroid'),
+    path('getcartAndroid',views.getcartAndroid,name='getcartAndroid'),
+    path('ratingAndroid',views.ratingAndroid,name='ratingAndroid'),
+    path('getSalonAndroid',views.getSalonAndroid,name='getSalonAndroid'),
 
 ]
 

@@ -7,7 +7,7 @@ from datetime import timedelta
 from django.db.models import Avg, Max, Min, Sum
 from django.core.mail import send_mail
 from SAH.settings import EMAIL_HOST_USER
-
+import hashlib
 
 #payment gateway
 from django.views.decorators.csrf import csrf_exempt
@@ -43,8 +43,15 @@ def payu_checkout(request):
     paynow = int((totalprice/100)*30)
     paylater = int((totalprice/100)*70)
     wallet_data  = user_wallet.objects.get(user_id__user_id = user_id)
-    if int(wallet_data.wallet_cash) >= 200:
-        paynow = 1
+    if int(wallet_data.wallet_cash) > 0:
+        if int(wallet_data.wallet_cash) >= int((totalprice/100)*5):          
+            paynow = paynow -  int((totalprice/100)*5)
+            less_amount = int((totalprice/100)*5)
+        else:
+            paynow = paynow -  int(wallet_data.wallet_cash)
+            less_amount = int(wallet_data.wallet_cash)
+    else:
+        less_amount = 0
     cartlist_data = cartlist_data[0]
     service_provider_id = cartlist_data.service_provider_id
     count = sah_service_provider.objects.filter(service_provider_id = service_provider_id ,verification_status='active',available_status='active').count()
@@ -57,7 +64,7 @@ def payu_checkout(request):
         'lastname': 'service_provider_id'+str(service_provider_id), 'address1': user_data.address,
         'address2': 'test', 'city': user_data.district,
         'state': 'test', 'country': 'test',
-        'zipcode': 'test', 'udf1': '',
+        'zipcode': str(less_amount), 'udf1': '',
         'udf2': '', 'udf3': '', 'udf4': '', 'udf5': ''
         }
 
@@ -83,39 +90,48 @@ def payu_success(request):
     bank_ref_num = return_data["bank_ref_num"]
     phone = return_data["phone"]
     addedon = return_data["addedon"]
-
-    print(amount)
-    print(status)
-    print(txnid)
-    print(bank_ref_num)
-    print(phone)
-    print(addedon)
-    order_status = models.CharField(max_length=10, null = False)
-    transaction.objects.filter( txnid = txnid).update(payment_status = status ,bank_ref_num = str(bank_ref_num),addedon=addedon,order_status = "initiated")
+    less_amount = return_data["zipcode"]
+    
     data = transaction.objects.get(txnid= txnid)
     user_id = data.user_id
     Euser_id = data.service_provider_id.service_provider_id
     #mail master
+    if data.order_status == 'initiated':
+        return render(request, 'Uorder_status.html', {"order_status": 'active','flashS': 'Payment unsual attempt','trans':'trans'})
+    
     subject = 'Order Recived .'
     message = 'Reciving new order check details on SAYA.'
     recepient = str(data.service_provider_id.email)
     send_mail(subject,message, EMAIL_HOST_USER, [recepient], fail_silently = False)
     wallet_data  = user_wallet.objects.get(user_id__user_id = user_id)
-    if int(wallet_data.wallet_cash) >= 200:
-        user_wallet.objects.filter(user_id__user_id = user_id).update(wallet_cash = 0)
-        sah_service_provider.objects.filter(service_provider_id = Euser_id).update(manager_commision = 0)
-    else:
-        fmanager = sah_service_provider.objects.get(service_provider_id = Euser_id)
-        manager_comission = fmanager.manager_commision
-        if manager_comission == None:
-            manager_comission = 0
-        manager_comission = int(manager_comission)+int((float(amount)*4)/30)
-        sah_service_provider.objects.filter(service_provider_id = Euser_id).update(manager_commision =manager_comission)
+    wallet_cash = int(wallet_data.wallet_cash) - int(less_amount)
+    user_wallet.objects.filter(user_id__user_id = user_id).update(wallet_cash = wallet_cash)    
+    fmanager = sah_service_provider.objects.get(service_provider_id = Euser_id)
+    manager_comission = fmanager.manager_commision
+    if manager_comission == None:
+        manager_comission = 0
+    mg_com = amount + less_amount
+    print(mg_com)
+    manager_comission = int(manager_comission) + int((float(mg_com)/30.0)*4)
+    sah_service_provider.objects.filter(service_provider_id = Euser_id).update(manager_commision =manager_comission)
+
+    #user wallet amount increase
+    total_amount = int((float(amount)/3)*10)
+    if total_amount < 500:
+        wallet_cash = int(random.randint(20,49)) + wallet_cash
+    if total_amount >= 500:
+        if total_amount < 1000:
+            wallet_cash = int(random.randint(50,99)) + wallet_cash
+        if total_amount >= 1000:
+            wallet_cash = int(random.randint(100,120)) + wallet_cash
+    user_wallet.objects.filter(user_id__user_id = user_id).update(wallet_cash = wallet_cash) 
+
     #mail manager
     subject = 'Order Recived to your member .'
     message = 'Reciving new order to member ' +str(data.service_provider_id.name) + ' check details on SAYA.'
     recepient = str(data.service_provider_id.manager_id.email)
     send_mail(subject,message, EMAIL_HOST_USER, [recepient], fail_silently = False)
+    transaction.objects.filter( txnid = txnid).update(payment_status = status ,bank_ref_num = str(bank_ref_num),addedon=addedon,order_status = "initiated")
     data = transaction.objects.filter(user_id= user_id).exclude(payment_status = 'initiate').order_by('-txn_id')
     return render(request, 'Uorder_status.html', {"order_status": 'active','flashS': 'Payment-Success','data':data,'trans':'trans'})
 
@@ -360,7 +376,7 @@ def rating(request):
         data = data[0]
         float_rating = data.service_provider_id.float_rating
         if float_rating == None:
-            float_rating = 0.0
+            float_rating = 5.0
         update_rating = float(float(data.order_rating)+float(float_rating))/2.0
         rating=int(update_rating + 0.5)
         sah_service_provider.objects.filter(service_provider_id =data.service_provider_id.service_provider_id).update(float_rating= update_rating,rating=rating)
@@ -450,10 +466,15 @@ def placeorder(request):
     paylater = int((totalprice/100)*70)
     wallet_data  = user_wallet.objects.get(user_id__user_id = user_id)
     flashP = ''
-    if int(wallet_data.wallet_cash) >= 200:
-        paynow = 1
+    if int(wallet_data.wallet_cash) > 0:
+        if int(wallet_data.wallet_cash) >= int((totalprice/100)*5):          
+            paynow = paynow -  int((totalprice/100)*5)
+            less_amount = int((totalprice/100)*5)
+        else:
+            paynow = paynow -  int(wallet_data.wallet_cash)
+            less_amount = int(wallet_data.wallet_cash)
         flashP = 'yes'
-    return render(request, 'Uplaceorder.html',{'data':data,'data1':data1,'totalprice':totalprice,'paynow':paynow,'paylater':paylater,'flashP':flashP})
+    return render(request, 'Uplaceorder.html',{'data':data,'data1':data1,'totalprice':totalprice,'paynow':paynow,'paylater':paylater,'flashP':flashP,'less_amount':less_amount})
 
 
 def orderList(request):
@@ -870,3 +891,406 @@ def handler404(request, exception):
 
 def handler500(request):
     return render(request, '500.html', status=500)
+
+@csrf_exempt
+def hash_genrator(request):
+    key = request.POST['key']
+    txnid = request.POST['txnid']
+    productinfo = request.POST['productinfo']
+    firstname = request.POST['firstname']
+    email = request.POST['email']
+    salt="bZ86rk5Gtf"
+    user_id = request.POST['user_id']
+    #post param for txnid###
+
+    user_data = sah_user.objects.filter(user_id = user_id)
+    user_data = user_data[0]
+    cartlist_data = cartlist.objects.filter(user_id = user_id)
+    totalprice = 0
+    cart_details = ''
+    order_data =''
+    for d in cartlist_data:
+        totalprice = totalprice + d.service_id.price
+        cart_details += 'services-'+str(d.service_id.name_of_service)+' '
+        order_data += str(d.service_id.name_of_service)+' at price'+str(d.service_id.price)+',\n'
+        service_provider_id = d.service_provider_id
+    paynow = int((totalprice/100)*30)
+    paylater = int((totalprice/100)*70)
+    wallet_data  = user_wallet.objects.get(user_id__user_id = user_id)
+    if int(wallet_data.wallet_cash) > 0:
+        if int(wallet_data.wallet_cash) >= int((totalprice/100)*5):          
+            paynow = paynow -  int((totalprice/100)*5)
+            less_amount = int((totalprice/100)*5)
+        else:
+            paynow = paynow -  int(wallet_data.wallet_cash)
+            less_amount = int(wallet_data.wallet_cash)
+    else:
+        less_amount = 0
+    cartlist_data = cartlist_data[0]
+    service_provider_id = cartlist_data.service_provider_id
+    count = sah_service_provider.objects.filter(service_provider_id = service_provider_id ,verification_status='active',available_status='active').count()
+    if count == 0:
+        return JsonResponse({'msg':'false','info':'master not available'})
+    # txnid = 'txt12346' #str(random.randint(999,100000))+'us'+str(user_id)+'ct'+str(cartlist_data.temp_id)+'Sp'+str(service_provider_id)+'rd'+str(random.randint(999,100000))
+    service_provider_data = sah_service_provider.objects.get(service_provider_id = service_provider_id)
+    manger_id = service_provider_data.manager_id.manager_id
+    transaction(txnid = txnid,amount_sah = paynow,amount_service= paylater,user_id=user_id,service_provider_id=service_provider_data,manager_id=manger_id,order_data=order_data,payment_status='initiate').save()
+
+    # #hashSequence = key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5||||||salt;
+    hashSeq = key+'|'+txnid+'|'+str(paynow)+'|'+productinfo+'|'+firstname+'|'+email+'|||||||||||'+salt
+    hash = hashlib.sha512(hashSeq.encode())
+    hash = hash.hexdigest()
+    return JsonResponse({'hash':hash,'txnid':txnid,'paynow':paynow, 'paylater':paylater,'less_amount':less_amount})
+
+
+@csrf_exempt
+def hash_response(request):
+    key = request.POST['key']
+    txnid = request.POST['txnid']
+    amount = request.POST['amount'] # only paynow amount
+    productinfo = request.POST['productinfo']
+    firstname = request.POST['firstname']
+    email = request.POST['email']
+    status = request.POST['status']
+    postedhash= request.POST['hash']
+    salt="bZ86rk5Gtf"
+    bank_ref_num = request.POST["bank_ref_num"]
+    phone = request.POST["phone"]
+    addedon = request.POST["addedon"]
+    less_amount = request.POST["less_amount"]
+    # #hashSequence = key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5||||||salt;
+    hashSeq = key+'|'+txnid+'|'+amount+'|'+productinfo+'|'+firstname+'|'+email+'|||||||||||'+salt
+    hash = hashlib.sha512(hashSeq.encode())
+    hash = hash.hexdigest()
+    if hash == postedhash:
+        if status == 'success':
+            payment_status = 'success'
+            transaction.objects.filter( txnid = txnid).update(payment_status = status ,bank_ref_num = str(bank_ref_num),addedon=addedon,order_status = "initiated")
+            data = transaction.objects.get(txnid= txnid)
+            user_id = data.user_id
+            Euser_id = data.service_provider_id.service_provider_id
+    #mail master
+            subject = 'Order Recived .'
+            message = 'Reciving new order check details on SAYA.'
+            recepient = str(data.service_provider_id.email)
+            send_mail(subject,message, EMAIL_HOST_USER, [recepient], fail_silently = False)
+            wallet_data  = user_wallet.objects.get(user_id__user_id = user_id)
+            wallet_cash = int(wallet_data.wallet_cash) - int(less_amount)
+            user_wallet.objects.filter(user_id__user_id = user_id).update(wallet_cash = wallet_cash)    
+            fmanager = sah_service_provider.objects.get(service_provider_id = Euser_id)
+            manager_comission = fmanager.manager_commision
+            if manager_comission == None:
+                manager_comission = 0
+            mg_com = amount + less_amount
+            print(mg_com)
+            manager_comission = int(manager_comission) + int((float(mg_com)/30.0)*4)
+            sah_service_provider.objects.filter(service_provider_id = Euser_id).update(manager_commision =manager_comission)
+
+            #user wallet amount increase
+            total_amount = int((float(amount)/3)*10)
+            if total_amount < 500:
+                reward =int(random.randint(20,49))
+                wallet_cash = reward + wallet_cash
+            if total_amount >= 500:
+                if total_amount < 1000:
+                    reward =int(random.randint(50,99))
+                    wallet_cash = reward + wallet_cash
+                if total_amount >= 1000:
+                    reward =int(random.randint(100,120))
+                    wallet_cash = reward + wallet_cash
+            user_wallet.objects.filter(user_id__user_id = user_id).update(wallet_cash = wallet_cash) 
+
+    #mail manager
+            subject = 'Order Recived to your member .'
+            message = 'Reciving new order to member ' +str(data.service_provider_id.name) + ' check details on SAYA.'
+            recepient = str(data.service_provider_id.manager_id.email)
+            send_mail(subject,message, EMAIL_HOST_USER, [recepient], fail_silently = False)
+            return JsonResponse({'payment_status':payment_status ,'reward':reward})
+        else:
+            payment_status = 'failure'
+            transaction.objects.filter( txnid = txnid).update(payment_status = status ,bank_ref_num = str(bank_ref_num),addedon=addedon,order_status = "Payment failed")
+            return JsonResponse({'payment_status':payment_status})
+    payment_status = 'hash match failed'
+    return JsonResponse({'payment_status':payment_status})
+
+@csrf_exempt
+def getSalonAndroid(request):
+    salon_type = request.POST['salon_type'] # options == 'Male' , 'Female' , 'MehArt', 'All'
+    # user_id = request.POST.get('user_id', None)
+    if salon_type == 'Male':
+        data = sah_service_provider.objects.filter(verification_status='active',available_status='active').exclude(salontype = 'Female').order_by('?')
+    if salon_type == 'Female':
+        data = sah_service_provider.objects.filter(verification_status='active',available_status='active').exclude(salontype = 'Male').order_by('?')
+    if salon_type == 'MehArt':
+        data = sah_service_provider.objects.filter(verification_status='active',available_status='active', salontype='MehArt').order_by('?')
+    if salon_type == 'All':
+        data = sah_service_provider.objects.filter(verification_status='active',available_status='active').order_by('?')
+    # if user_id != None:
+    #     user = sah_user.objects.get(user_id =user_id)
+    #     district = user.district
+    #     data = data.filter(district=district)
+    data = list(data.values())
+    return JsonResponse({'data':data})
+
+@csrf_exempt
+def getserviceAndroid(request):
+    service_provider_id = request.POST['service_provider_id']
+    data = service.objects.filter(service_provider_id__service_provider_id=service_provider_id,service_status = 'active')
+    data = list(data.values())
+    return JsonResponse({'data':data})
+
+@csrf_exempt
+def getcartAndroid(request):
+    user_id = request.POST['user_id']
+    data = cartlist.objects.filter(user_id = user_id).order_by('-temp_id')
+    if data.count() == 0:
+        cartitem = 'empty'
+    else:
+        cartitem = 'full'
+    data = list(data.values('temp_id','user_id','service_provider_id','service_id','created_at','service_id__service_id',
+                            'service_id__name_of_service','service_id__price','service_id__information','service_id__image',
+                            'service_id__service_status','service_id__service_provider_id'
+                            ))
+    # data = list(data.values())
+    return JsonResponse({'data':data,'cartitem':cartitem})
+
+@csrf_exempt
+def cartlistAdd(request):
+    if request.method == 'POST':
+        user_id= request.POST['user_id']
+        service_prov_id= request.POST['service_provider_id']
+        service_id= request.POST['service_id']
+        dat = cartlist.objects.filter(user_id = user_id).exclude(service_provider_id = service_prov_id )
+        if dat.count() !=0:
+            cartlist.objects.filter(user_id = user_id).exclude(service_provider_id = service_prov_id ).delete()
+        service_ob =service.objects.get(service_id = service_id)
+        count = cartlist.objects.filter(service_id__service_id=service_id,user_id=user_id).count()
+        if count == 0:
+            cartlist(user_id = user_id,service_provider_id = service_prov_id, service_id =service_ob).save()
+        data = cartlist.objects.filter(user_id = user_id,service_provider_id = service_prov_id).order_by('-temp_id')
+        data = list(data.values('temp_id','service_id__service_id','service_id__name_of_service', 'service_id__price','service_provider_id','service_id__image'))
+    return JsonResponse({'data':data})
+
+@csrf_exempt
+def cartlistRemove(request):
+    if request.method == 'POST':
+        user_id = request.POST['user_id']
+        service_id = request.POST['service_id']#carlist id auto genrated primary key
+        cartlist.objects.filter(user_id = user_id,service_id = service_id).delete()
+        data = cartlist.objects.filter(user_id = user_id).order_by('-temp_id')
+        if data.count() == 0:
+            cartitem = 'empty'
+        else:
+            cartitem = 'full'
+        data = list(data.values('temp_id','service_id__service_id','service_id__name_of_service', 'service_id__price','service_provider_id','service_id__image'))
+    return JsonResponse({'data':data,'cartitem':cartitem})
+
+@csrf_exempt
+def orderListAndroid(request):
+    user_id = request.POST['user_id']
+    data = transaction.objects.filter(user_id= user_id).exclude(payment_status = 'initiate').order_by('-txn_id')
+    data = list(data.values('txn_id','txnid','amount_sah','amount_service','user_id','manager_id','order_data',
+                            'order_rating','payment_status','addedon','bank_ref_num','order_status','notify_mannager',
+                            'notify_master','created_at',
+                            'service_provider_id__service_provider_id','service_provider_id__name',
+                            'service_provider_id__shopname','service_provider_id__mobile','service_provider_id__image','service_provider_id__manager_id'
+                            ))
+    return JsonResponse({'data':data})
+
+@csrf_exempt
+def orderdetailAndroid(request):
+    txnid = request.POST['txnid']
+    data = transaction.objects.filter(txnid =txnid)
+    if data.count() == 1:
+        data = list(data.values('txn_id','txnid','amount_sah','amount_service','user_id','manager_id','order_data',
+                            'order_rating','payment_status','addedon','bank_ref_num','order_status','notify_mannager',
+                            'notify_master','created_at',
+                            'service_provider_id__service_provider_id','service_provider_id__name',
+                            'service_provider_id__shopname','service_provider_id__mobile','service_provider_id__image'
+                            ))
+        return JsonResponse({'data':data})
+
+@csrf_exempt
+def ratingAndroid(request):
+    rating = request.POST['rating']
+    txnid = request.POST['txnid']
+    transaction.objects.filter(txnid = txnid).update(order_rating=rating)
+    data = transaction.objects.filter(txnid = txnid)
+    data = data[0]
+    float_rating = data.service_provider_id.float_rating
+    if float_rating == None:
+        float_rating = 5.0
+    update_rating = float(float(data.order_rating)+float(float_rating))/2.0
+    rating=int(update_rating + 0.5)
+    sah_service_provider.objects.filter(service_provider_id =data.service_provider_id.service_provider_id).update(float_rating= update_rating,rating=rating)
+    data = transaction.objects.filter(txnid = txnid)
+    data = list(data.values('order_rating'))
+    return JsonResponse({'data':data})
+
+@csrf_exempt
+def signupAndroid(request):
+    district_data = district_list.objects.all().order_by('district')
+    district_data = list(district_data.values('district'))
+    if request.method == 'POST':
+        user_name = request.POST['user_name']
+        email = request.POST['email']
+        mobile = request.POST['mobile']
+        address = request.POST['address']
+        gender = request.POST['gender']
+        district = request.POST['district']
+        password = request.POST['password']
+        repassword = request.POST['re_password']
+        if user_name == None:
+            msg = 'blank name invalid'
+            return JsonResponse({'msg':msg,'signup':'active','user_name':user_name,'email':email,'mobile':mobile,'address':address,'gender':gender,'district':district, 'district_list':district_data})
+        if email == None:
+            msg = 'blank email invalid'
+            return JsonResponse({'msg':msg,'signup':'active','user_name':user_name,'email':email,'mobile':mobile,'address':address,'gender':gender,'district':district, 'district_list':district_data})
+        if mobile == None:
+            msg = 'blank mobile number invalid'
+            return JsonResponse({'msg':msg,'signup':'active','user_name':user_name,'email':email,'mobile':mobile,'address':address,'gender':gender,'district':district, 'district_list':district_data})
+        if address == None:
+            msg = ' address invalid'
+            return JsonResponse({'msg':msg,'signup':'active','user_name':user_name,'email':email,'mobile':mobile,'address':address,'gender':gender,'district':district, 'district_list':district_data})
+        if gender == None:
+            msg = 'select gender'
+            return JsonResponse({'msg':msg,'signup':'active','user_name':user_name,'email':email,'mobile':mobile,'address':address,'gender':gender,'district':district, 'district_list':district_data})
+        if district == None:
+            msg = 'select district'
+            return JsonResponse({'msg':msg,'signup':'active','user_name':user_name,'email':email,'mobile':mobile,'address':address,'gender':gender,'district':district, 'district_list':district_data})
+        if len(mobile) <= 9:
+            msg = 'Mobile number not valid'
+            return JsonResponse({'msg':msg,'signup':'active','user_name':user_name,'email':email,'mobile':mobile,'address':address,'gender':gender,'district':district, 'district_list':district_data})
+        if len(password) <=  7:
+            msg = 'Password too short!'
+            return JsonResponse({'msg':msg,'signup':'active','user_name':user_name,'email':email,'mobile':mobile,'address':address,'gender':gender,'district':district, 'district_list':district_data})
+        if password != request.POST['re_password']:
+            msg = 'Password not match!'
+            return JsonResponse({'msg':msg,'signup':'active','user_name':user_name,'email':email,'mobile':mobile,'address':address,'gender':gender,'district':district, 'district_list':district_data})
+        emailcounts = sah_user.objects.filter(email= email).count()
+        mobilecount = sah_user.objects.filter(mobile= mobile).count()
+        if emailcounts == 1:
+            msg = 'Email already exisit with other account!'
+            return JsonResponse({'msg':msg,'signup':'active','user_name':user_name,'email':email,'mobile':mobile,'address':address,'gender':gender,'district':district, 'district_list':district_data})
+        if mobilecount == 1:
+            msg = 'Mobile number already exisit with other account!'
+            return JsonResponse({'msg':msg,'signup':'active','user_name':user_name,'email':email,'mobile':mobile,'address':address,'gender':gender,'district':district, 'district_list':district_data})
+        sah_user(user_name = user_name, email = email, mobile = mobile, address = address,gender = gender,district = district , password = password,wallet_id=None,email_verification=None).save()
+        user_ob = sah_user.objects.get(email = email)
+        user_wallet(wallet_cash = 0,user_id=user_ob).save()
+        data = user_wallet.objects.get(user_id__email = email )
+        sah_user.objects.filter(email = email).update(wallet_id = data.wallet_id)
+        # subject = 'Welcome '+str(user_name)
+        # message = 'Dear '+user_name+', we welcomes you get connect with us.'
+        # recepient = str(email)
+        # send_mail(subject,message, EMAIL_HOST_USER, [recepient], fail_silently = False)
+        msg = 'Account created succesfully Now log in '
+        return JsonResponse({'msg':msg,'signup':'true'})
+    else:
+        return JsonResponse({'signup':'active', 'district_list':district_data})
+
+@csrf_exempt
+def walletAndroid(request):
+    user_id = request.POST['user_id']
+    user_ob = sah_user.objects.get(user_id = user_id)
+    if 1 == user_wallet.objects.filter(user_id =user_ob ).count():
+        data = user_wallet.objects.get(user_id__user_id = user_id)
+        wallet_cash = data.wallet_cash
+        return JsonResponse({'user_id':user_id,'wallet_cash':wallet_cash,'msg':'true'})
+    else:
+        return JsonResponse({'msg':'false'})
+
+@csrf_exempt
+def loginAndroid(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+        data = sah_user.objects.filter(email= email)
+        counts = sah_user.objects.filter(email= email).count()
+        if counts == 1:
+            data=data[0]
+            if data.password == request.POST['password']:
+                request.session['user_id'] = data.user_id
+                request.session['user_email'] = data.email
+                request.session['user_name'] = data.user_name
+                return JsonResponse({'login':'true','user_id':data.user_id,'name':data.user_name,'email':data.email,'mobile':data.mobile})
+            else:
+                msg = "email or Password invalid"
+                return JsonResponse({'msg':msg,'email':email})
+        else:
+            msg = "email or Password invalid"
+            return JsonResponse({'msg':msg,'email':email})
+    else:
+        return JsonResponse({'login':'false'})
+
+def logoutAndroid(request):
+    try:
+        request.session['user_id'] = None
+        request.session['user_email'] = None
+        request.session['user_name'] = None
+        print('del')
+    except KeyError:
+        pass
+    return JsonResponse({'logout':'true'})
+
+@csrf_exempt
+def forgotPasswordAndroid(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        category = 'User'
+        if category == 'User':
+            data = sah_user.objects.filter(email = email)
+            count = data.count()
+            if count == 1:
+                data = data[0]
+                otp = str(random.randint(100000,999999))
+                otp_authentication(user_id= data.user_id, otp = otp,category= category).save()
+                subject = 'OTP'
+                message = 'Dear '+data.user_name+' otp for your Password reset is '+str(otp)+' This is only valid for 5 Minutes.'
+                recepient = str(email)
+                send_mail(subject,message, EMAIL_HOST_USER, [recepient], fail_silently = False)
+                return JsonResponse({'otp':'true'})
+            else:
+                msg = 'Email not exsist'
+                return JsonResponse({'msg':msg})
+
+@csrf_exempt
+def otpAndroid(request):
+    if request.method == 'POST':
+        otp = request.POST['otp']
+        password = request.POST['password']
+        otp_authentication.objects.filter(created_at__lte = timezone.now() - timedelta(minutes=5)).delete()
+        if len(password) <=  7:
+            msg = 'Password too short!'
+            return JsonResponse({'msg':msg})
+        email = request.POST['email']
+        category = 'User'
+        if category == 'User':
+            data = sah_user.objects.get(email = email)
+            user_id = data.user_id
+            otpdata = otp_authentication.objects.filter(user_id= user_id,category=category).order_by('-id')
+            if otpdata.count() >= 1:
+                otpdata = otpdata[0]
+                if str(otp) == str(otpdata.otp):
+                    sah_user.objects.filter(email = email).update(password = password)
+                    msg = 'Password  changed succesfully'
+                    return JsonResponse({'otp':'valid','msg':msg})
+                msg = 'otp not matched'
+                print('user')
+                print(otp)
+                print(otpdata.otp)
+                return JsonResponse({'otp':'invalid','email':email,'msg':msg})
+
+@csrf_exempt
+def contactAndroid(request):
+    if request.method == 'POST':
+        user_id = request.POST['user_id']
+        subject = request.POST['subject']
+        message = request.POST['message']
+        user = sah_user.objects.get(user_id =user_id )
+        email = user.email
+        contact = user.mobile
+        contact_us(subject=subject, message= message, user_email = email,user_contact=contact).save()
+        msg = "compliment or complaint assigned succesfully"
+        return JsonResponse({'contact':'true','msg':msg})
+    return JsonResponse({'contact':'false'})

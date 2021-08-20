@@ -40,12 +40,14 @@ INSTALLED_APPS = [
     'sah_manager',
     'sah_employer',
     'paywix',
+    'resapi',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -104,9 +106,9 @@ DATABASES = {
 PAYU_CONFIG = {
     "merchant_key": "lSeYpOcC",
     "merchant_salt": "HlTjeV0FSf",
-    "mode": "live",
-    "success_url": "https://saya.pythonanywhere.com/payu_success",
-    "failure_url": "https://saya.pythonanywhere.com/payu_failure"
+    "mode": "test",
+    "success_url": "http://127.0.0.1:8000/payu_success",
+    "failure_url": "http://127.0.0.1:8000/payu_failure"
 }
 
 

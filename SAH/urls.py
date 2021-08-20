@@ -21,6 +21,7 @@ urlpatterns = [
     path('',include('Sah_User.urls')),
     path('manager/',include('sah_manager.urls')),
     path('master/',include('sah_employer.urls'),name= 'master'),
+    path('resapi/',include('resapi.urls')),
     
 ]
 

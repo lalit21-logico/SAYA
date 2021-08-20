@@ -26,11 +26,11 @@
                             {% csrf_token%}
                             <div class="form-inline my-2 my-lg-0" style="padding-top: 16px;padding-left: 5px;">
                                 <div class="input-group mb-3">
-                                    <input type="number" min="0"  class="form-control" placeholder="Set Area Pincode filter"
-                                        name="Pincode" onfocus="this.placeholder = ''"
-                                        onblur="this.placeholder = 'Set Area Pincode filter'">
+                                    <input type="text" class="form-control" placeholder="search by heading sub etc."
+                                        name="book" onfocus="this.placeholder = ''"
+                                        onblur="this.placeholder = 'search by heading'">
                                     <div class="input-group-append">
-                                        <button class="btn" type="submit">SET</button>
+                                        <button class="btn" type="submit">Search</button>
                                     </div>
                                 </div>
                             </div>
@@ -170,7 +170,8 @@
                                 </div>
                                 <h4 class="text-truncate"
                                     style="border: none; text-decoration:underline;overflow: hidden; max-width: 40ch;">
-                                    <abbr title="{{d.shopname}}">{{d.shopname}}</abbr></h4>
+                                    <abbr title="{{d.shopname}}">{{d.shopname}}</abbr>
+                                </h4>
                                 <div class="col-md-3">
                                     <p><small>{{d.name}}</small></p>
                                 </div>
@@ -180,7 +181,8 @@
 
                         <p class="h3 mb-3 font-weight-normal mt-2 text-dark">
                             keep waiting we start srevices in your area soon.
-                            <br></p>
+                            <br>
+                        </p>
                         <p class="h4 mb-3 font-weight-normal mt-2 text-success">
                             Connected with us......
                         </p>
